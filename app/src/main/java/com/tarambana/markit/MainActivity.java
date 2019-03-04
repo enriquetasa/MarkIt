@@ -2,8 +2,7 @@ package com.tarambana.markit;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,12 +12,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
+
+import com.microsoft.windowsazure.mobileservices.*;
+import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
+import com.microsoft.windowsazure.mobileservices.table.TableOperationCallback;
+import com.microsoft.windowsazure.mobileservices.table.TableQueryCallback;
+import com.tarambana.markit.DataContainers.LabGroup;
+
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.val;
+
 
 // TODO - this starter activity will effectively be the student select activity and therefore needs to have the logic and code in it
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    static public String TAG = "TASA_LOG: ";
+
+    private MobileServiceClient mClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +65,26 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        try {
+            Log.d(TAG, "Attempting to connect to Azure site");
+
+            mClient = new MobileServiceClient(
+                    "https://bookchoice.azurewebsites.net",
+                    this
+            );
+
+        } catch (MalformedURLException e){
+            Log.d(TAG, "Malformed URL in connection to Azure site");
+            e.printStackTrace();
+        }
+
+        LabGroup labSample = new LabGroup();
+        labSample.setLabGroupUnit("Microcontroller Engineering II");
+        labSample.setLabGroupAssignmentID(1);
+        labSample.setLabGroupNumber(2);
+        labSample.setLabGroupLocation("Barnes Wallis PC Cluster");
+        Log.d(TAG, "sampleLab created correctly");
+        addItemsToTable(labSample);
     }
 
     @Override
@@ -103,5 +141,84 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    void refreshDropDown(String id, String condition, final int dropdownToUpdate){
+
+        // This is how a basic query is executed, in this case all IDs
+        mClient.getTable(LabGroup.class).where().field(id).eq(val(condition)).execute(new TableQueryCallback<LabGroup>() {
+
+            // Listener that automatically gets set for the result of the transaction with Azure
+            @Override
+            public void onCompleted(java.util.List<LabGroup> result, int count, Exception exception, ServiceFilterResponse response) {
+
+                if (exception == null) {
+                    // Great success in refreshing
+                    // Do something if you wish, result contains your data
+                    List<String> unitSpinnerList = new ArrayList<>();
+
+
+                    for (LabGroup unit : result) {
+                        unitSpinnerList.add(unit.getLabGroupUnit());
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                            getApplicationContext(), android.R.layout.simple_spinner_item, unitSpinnerList);
+
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    Spinner unitSpinner;
+                    switch (dropdownToUpdate) {
+                        case 1:
+                            unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
+                            break;
+                        case 2:
+                            unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
+                            break;
+                        case 3:
+                            unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
+                            break;
+                        case 4:
+                            unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
+                            break;
+                        default:
+                            unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
+                            break;
+                    }
+
+                    unitSpinner.setAdapter(adapter);
+                }
+
+                else {
+                    // there has been an exception handle it
+                }
+            }
+        });
+    }
+
+    void addItemsToTable(LabGroup lab){
+
+        Log.d(TAG, "in function");
+        // Insert statement, directly pass the container class
+        // TODO - Peta aqui
+        mClient.getTable(LabGroup.class).insert(lab, new TableOperationCallback<LabGroup>() {
+
+            @Override
+            public void onCompleted(LabGroup entity, Exception exception, ServiceFilterResponse response) {
+
+                Log.d(TAG, "in inner function");
+
+
+                // Always check for exceptions/completion
+                if (exception == null){
+                    refreshDropDown("id", "*", 1);
+                    Log.d(TAG, "Written ok");
+                }
+
+                else{
+                    exception.printStackTrace();
+                    Log.d(TAG, "exception caught" + exception.getMessage());
+                }
+            }
+        });
     }
 }

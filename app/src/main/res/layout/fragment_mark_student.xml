@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".MarkStudent$PlaceholderFragment">
+
 
     <TextView
         android:id="@+id/section_label"
@@ -19,5 +20,27 @@
         app:layout_constraintTop_toTopOf="@+id/constraintLayout"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintTop_creator="1" />
+
+    <EditText
+        android:id="@+id/CommentsET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="788dp"
+        android:ems="10"
+        android:hint="Comments"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <CheckBox
+        android:id="@+id/FirstMarkCB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="This is where marks will go"
+        app:layout_constraintBottom_toTopOf="@+id/CommentsET"
+        app:layout_constraintStart_toStartOf="@+id/CommentsET" />
+
 
 </android.support.constraint.ConstraintLayout>

@@ -31,6 +31,11 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_margin="16dp"
+        android:textColor="@color/colorGrey"
+        android:ellipsize="marquee"
+        android:textAlignment="inherit"
+        android:textStyle="bold"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/SelectUnitTV"
         app:layout_constraintTop_toBottomOf="@+id/SelectUnitTV" />
 
@@ -55,6 +60,11 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_margin="16dp"
+        android:textColor="@color/colorGrey"
+        android:ellipsize="marquee"
+        android:textAlignment="inherit"
+        android:textStyle="bold"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/SelectAssignmentTV"
         app:layout_constraintTop_toBottomOf="@+id/SelectAssignmentTV" />
 
@@ -79,6 +89,11 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_margin="16dp"
+        android:ellipsize="marquee"
+        android:textAlignment="inherit"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/colorGrey"
         app:layout_constraintStart_toStartOf="@+id/SelectGroupTV"
         app:layout_constraintTop_toBottomOf="@+id/SelectGroupTV" />
 
@@ -103,6 +118,11 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_margin="16dp"
+        android:ellipsize="marquee"
+        android:textAlignment="inherit"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/colorGrey"
         app:layout_constraintStart_toStartOf="@+id/SelectStudentTV"
         app:layout_constraintTop_toBottomOf="@+id/SelectStudentTV" />
 
