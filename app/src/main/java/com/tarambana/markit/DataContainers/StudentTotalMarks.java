@@ -6,35 +6,35 @@ public class StudentTotalMarks {
     private String mID;
 
     @com.google.gson.annotations.SerializedName("TotalStudentID")
-    public String totalMarksStudentID;
+    public int totalMarksStudentID;
 
     @com.google.gson.annotations.SerializedName("TotalAssignmentID")
-    public String totalMarksAssignmentID;
+    public int totalMarksAssignmentID;
 
     @com.google.gson.annotations.SerializedName("TotalMarksAchieved")
-    public String totalMarksAchieved;
+    public int totalMarksAchieved;
 
-    public String getStudentTotalMarksStudentID() {
+    public int getStudentTotalMarksStudentID() {
         return totalMarksStudentID;
     }
 
-    public void setStudentTotalMarksStudentID(String studentTotalMarksStudentID) {
+    public void setStudentTotalMarksStudentID(int studentTotalMarksStudentID) {
         this.totalMarksStudentID = studentTotalMarksStudentID;
     }
 
-    public String getStudentTotalMarksAssignmentID() {
+    public int getStudentTotalMarksAssignmentID() {
         return totalMarksAssignmentID;
     }
 
-    public void setStudentTotalMarksAssignmentID(String studentTotalMarksAssignmentID) {
+    public void setStudentTotalMarksAssignmentID(int studentTotalMarksAssignmentID) {
         this.totalMarksAssignmentID = studentTotalMarksAssignmentID;
     }
 
-    public String getStudentTotalMarksAchieved() {
+    public int getStudentTotalMarksAchieved() {
         return totalMarksAchieved;
     }
 
-    public void setStudentTotalMarksAchieved(String studentTotalMarksAchieved) {
+    public void setStudentTotalMarksAchieved(int studentTotalMarksAchieved) {
         totalMarksAchieved = studentTotalMarksAchieved;
     }
 }

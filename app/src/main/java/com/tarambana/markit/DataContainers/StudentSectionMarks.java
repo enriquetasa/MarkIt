@@ -6,19 +6,19 @@ public class StudentSectionMarks {
     private String mID;
 
     @com.google.gson.annotations.SerializedName("SectionStudentID")
-    public String sectionStudentID;
+    public int sectionStudentID;
 
     @com.google.gson.annotations.SerializedName("SectionAssignmentID")
-    public String sectionAssignmentID;
+    public int sectionAssignmentID;
 
     @com.google.gson.annotations.SerializedName("SectionPartID")
-    public String sectionPartID;
+    public int sectionPartID;
 
     @com.google.gson.annotations.SerializedName("SectionID")
-    public String sectionSectionID;
+    public int sectionSectionID;
 
     @com.google.gson.annotations.SerializedName("SectionStudentMarks")
-    public String sectionStudentMarks;
+    public int sectionStudentMarks;
 
     @com.google.gson.annotations.SerializedName("SectionAuthor")
     public String sectionAuthor;
@@ -31,43 +31,43 @@ public class StudentSectionMarks {
         this.sectionAuthor = sectionAuthor;
     }
 
-    public String getSectionStudentMarks() {
+    public int getSectionStudentMarks() {
         return sectionStudentMarks;
     }
 
-    public void setSectionStudentMarks(String sectionStudentMarks) {
+    public void setSectionStudentMarks(int sectionStudentMarks) {
         this.sectionStudentMarks = sectionStudentMarks;
     }
 
-    public String getSectionSectionID() {
+    public int getSectionSectionID() {
         return sectionSectionID;
     }
 
-    public void setSectionSectionID(String sectionSectionID) {
+    public void setSectionSectionID(int sectionSectionID) {
         this.sectionSectionID = sectionSectionID;
     }
 
-    public String getSectionPartID() {
+    public int getSectionPartID() {
         return sectionPartID;
     }
 
-    public void setSectionPartID(String sectionPartID) {
+    public void setSectionPartID(int sectionPartID) {
         this.sectionPartID = sectionPartID;
     }
 
-    public String getSectionAssignmentID() {
+    public int getSectionAssignmentID() {
         return sectionAssignmentID;
     }
 
-    public void setSectionAssignmentID(String sectionAssignmentID) {
+    public void setSectionAssignmentID(int sectionAssignmentID) {
         this.sectionAssignmentID = sectionAssignmentID;
     }
 
-    public String getSectionStudentID() {
+    public int getSectionStudentID() {
         return sectionStudentID;
     }
 
-    public void setSectionStudentID(String sectionStudentID) {
+    public void setSectionStudentID(int sectionStudentID) {
         this.sectionStudentID = sectionStudentID;
     }
 }

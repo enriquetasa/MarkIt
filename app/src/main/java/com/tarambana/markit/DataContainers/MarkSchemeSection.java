@@ -15,7 +15,7 @@ public class MarkSchemeSection {
     public String sectionName;
 
     @com.google.gson.annotations.SerializedName("SectionAvailableMarks")
-    public String sectionAvailableMarks;
+    public int sectionAvailableMarks;
 
     @com.google.gson.annotations.SerializedName("SectionAuthor")
     public String sectionAuthor;
@@ -44,11 +44,11 @@ public class MarkSchemeSection {
         this.sectionName = sectionName;
     }
 
-    public String getSectionAvailableMarks() {
+    public int getSectionAvailableMarks() {
         return sectionAvailableMarks;
     }
 
-    public void setSectionAvailableMarks(String sectionAvailableMarks) {
+    public void setSectionAvailableMarks(int sectionAvailableMarks) {
         this.sectionAvailableMarks = sectionAvailableMarks;
     }
 

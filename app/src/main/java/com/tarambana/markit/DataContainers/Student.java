@@ -12,7 +12,7 @@ public class Student {
     public String studentFirstName;
 
     @com.google.gson.annotations.SerializedName("StudentID")
-    public String studentID;
+    public int studentID;
 
     public String getStudentLastName() {
         return studentLastName;
@@ -30,11 +30,11 @@ public class Student {
         this.studentFirstName = studentFirstName;
     }
 
-    public String getStudentID() {
+    public int getStudentID() {
         return studentID;
     }
 
-    public void setStudentID(String studentID) {
+    public void setStudentID(int studentID) {
         this.studentID = studentID;
     }
 }

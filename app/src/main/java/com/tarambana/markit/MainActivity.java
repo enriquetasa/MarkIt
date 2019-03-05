@@ -21,6 +21,12 @@ import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.TableOperationCallback;
 import com.microsoft.windowsazure.mobileservices.table.TableQueryCallback;
 import com.tarambana.markit.DataContainers.LabGroup;
+import com.tarambana.markit.DataContainers.MarkScheme;
+import com.tarambana.markit.DataContainers.MarkSchemePart;
+import com.tarambana.markit.DataContainers.MarkSchemeSection;
+import com.tarambana.markit.DataContainers.Student;
+import com.tarambana.markit.DataContainers.StudentSectionMarks;
+import com.tarambana.markit.DataContainers.StudentTotalMarks;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -78,12 +84,10 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        LabGroup labSample = new LabGroup();
-        labSample.setLabGroupUnit("Microcontroller Engineering II");
-        labSample.setLabGroupAssignmentID(1);
-        labSample.setLabGroupNumber(2);
-        labSample.setLabGroupLocation("Barnes Wallis PC Cluster");
-        Log.d(TAG, "sampleLab created correctly");
+        StudentTotalMarks labSample = new StudentTotalMarks();
+        labSample.setStudentTotalMarksAchieved(1);
+        labSample.setStudentTotalMarksAssignmentID(1);
+        labSample.setStudentTotalMarksStudentID(9673164);
         addItemsToTable(labSample);
     }
 
@@ -143,7 +147,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    void refreshDropDown(String id, String condition, final int dropdownToUpdate){
+    /**void refreshDropDown(String id, String condition, final int dropdownToUpdate){
 
         // This is how a basic query is executed, in this case all IDs
         mClient.getTable(LabGroup.class).where().field(id).eq(val(condition)).execute(new TableQueryCallback<LabGroup>() {
@@ -193,24 +197,22 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-    }
+    }**/
 
-    void addItemsToTable(LabGroup lab){
+    void addItemsToTable(StudentTotalMarks lab){
 
         Log.d(TAG, "in function");
         // Insert statement, directly pass the container class
-        // TODO - Peta aqui
-        mClient.getTable(LabGroup.class).insert(lab, new TableOperationCallback<LabGroup>() {
+        mClient.getTable(StudentTotalMarks.class).insert(lab, new TableOperationCallback<StudentTotalMarks>() {
 
             @Override
-            public void onCompleted(LabGroup entity, Exception exception, ServiceFilterResponse response) {
+            public void onCompleted(StudentTotalMarks entity, Exception exception, ServiceFilterResponse response) {
 
                 Log.d(TAG, "in inner function");
 
 
                 // Always check for exceptions/completion
                 if (exception == null){
-                    refreshDropDown("id", "*", 1);
                     Log.d(TAG, "Written ok");
                 }
 
