@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -47,29 +48,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.getMenu().getItem(0).setChecked(true);
-
-        Button MarkStudentBtn = (Button) findViewById(R.id.MarkStudentBtn);
-        MarkStudentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MarkStudent.class);
-                // TODO - Add the extra of the information for the student being marked to load the mark scheme
-                startActivity(intent);
-            }
-        });
 
         try {
             Log.d(TAG, "Attempting to connect to Azure site");
@@ -84,11 +62,90 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        StudentTotalMarks labSample = new StudentTotalMarks();
-        labSample.setStudentTotalMarksAchieved(1);
-        labSample.setStudentTotalMarksAssignmentID(1);
-        labSample.setStudentTotalMarksStudentID(9673164);
-        addItemsToTable(labSample);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.getMenu().getItem(0).setChecked(true);
+
+        final Spinner unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
+        final Spinner assignmentSpinner = (Spinner) findViewById(R.id.SelectAssignmentSp);
+        final Spinner groupSpinner = (Spinner) findViewById(R.id.SelectGroupSp);
+        final Spinner studentSpinner = (Spinner) findViewById(R.id.SelectStudentSp);
+
+
+        Button MarkStudentBtn = (Button) findViewById(R.id.MarkStudentBtn);
+        MarkStudentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MarkStudent.class);
+                // TODO - Add the extra of the information for the student being marked to load the mark scheme
+                Bundle selectionInfo = new Bundle();
+                selectionInfo.putString("unit", unitSpinner.getSelectedItem().toString());
+                selectionInfo.putInt("assignment", (int)assignmentSpinner.getSelectedItem());
+                selectionInfo.putInt("group", (int)groupSpinner.getSelectedItem());
+                selectionInfo.putInt("studentID", (int)studentSpinner.getSelectedItem());
+                intent.putExtras(selectionInfo);
+                startActivity(intent);
+            }
+        });
+
+        // this is the only one that will actually run at runtime, the others need to launch as listeners once a certain spinner is clicked
+        refreshUnitDropDown("deleted","false");
+
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+
+        final Spinner unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
+        unitSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                refreshAssignmentDropDown("LABGROUPUNIT", unitSpinner.getSelectedItem().toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        final Spinner assignmentSpinner = (Spinner) findViewById(R.id.SelectAssignmentSp);
+        assignmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                refreshGroupDropDown("LABGROUPASSIGNMENTID", assignmentSpinner.getSelectedItem().toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        final Spinner groupSpinner = (Spinner) findViewById(R.id.SelectGroupSp);
+        groupSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                refreshStudentDropDown("LABGROUPNUMBER", groupSpinner.getSelectedItem().toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
     }
 
     @Override
@@ -100,7 +157,6 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -147,10 +203,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    /**void refreshDropDown(String id, String condition, final int dropdownToUpdate){
+    void refreshUnitDropDown(String field, String condition){
 
+        Log.d(TAG, "Refreshing unit dropdown");
         // This is how a basic query is executed, in this case all IDs
-        mClient.getTable(LabGroup.class).where().field(id).eq(val(condition)).execute(new TableQueryCallback<LabGroup>() {
+        mClient.getTable(LabGroup.class).where().field(field).eq(condition).execute(new TableQueryCallback<LabGroup>() {
 
             // Listener that automatically gets set for the result of the transaction with Azure
             @Override
@@ -160,53 +217,159 @@ public class MainActivity extends AppCompatActivity
                     // Great success in refreshing
                     // Do something if you wish, result contains your data
                     List<String> unitSpinnerList = new ArrayList<>();
+                    unitSpinnerList.add("Please select a unit");
 
+                    Log.d(TAG, "Dropdown content successfully retrieved from cloud");
 
                     for (LabGroup unit : result) {
-                        unitSpinnerList.add(unit.getLabGroupUnit());
+                        if (!(unitSpinnerList.contains(unit.getLabGroupUnit()))) {
+                            unitSpinnerList.add(unit.getLabGroupUnit());
+                        }
+
+                        Log.d(TAG, "got passed it bwana");
                     }
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(
                             getApplicationContext(), android.R.layout.simple_spinner_item, unitSpinnerList);
 
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    Spinner unitSpinner;
-                    switch (dropdownToUpdate) {
-                        case 1:
-                            unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
-                            break;
-                        case 2:
-                            unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
-                            break;
-                        case 3:
-                            unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
-                            break;
-                        case 4:
-                            unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
-                            break;
-                        default:
-                            unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
-                            break;
-                    }
-
+                    Spinner unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
+                    Log.d(TAG, "Selected spinner " + R.id.SelectUnitSp);
                     unitSpinner.setAdapter(adapter);
                 }
 
                 else {
-                    // there has been an exception handle it
+                    Log.d(TAG, "Exception found: " + exception.getMessage());
                 }
             }
         });
-    }**/
+    }
 
-    void addItemsToTable(StudentTotalMarks lab){
+    void refreshAssignmentDropDown(String field, String condition){
+
+        Log.d(TAG, "Refreshing assignment dropdown");
+        // This is how a basic query is executed, in this case all IDs
+        mClient.getTable(LabGroup.class).where().field(field).eq(condition).execute(new TableQueryCallback<LabGroup>() {
+
+            // Listener that automatically gets set for the result of the transaction with Azure
+            @Override
+            public void onCompleted(java.util.List<LabGroup> result, int count, Exception exception, ServiceFilterResponse response) {
+
+                if (exception == null) {
+                    // Great success in refreshing
+                    // Do something if you wish, result contains your data
+                    List<Integer> unitSpinnerList = new ArrayList<>();
+
+                    Log.d(TAG, "Dropdown content successfully retrieved from cloud");
+
+                    for (LabGroup unit : result) {
+                        if (!(unitSpinnerList.contains(unit.getLabGroupAssignmentID()))) {
+                            unitSpinnerList.add(unit.getLabGroupAssignmentID());
+                        }
+                    }
+
+                    ArrayAdapter<Integer> adapter = new ArrayAdapter<>(
+                            getApplicationContext(), android.R.layout.simple_spinner_item, unitSpinnerList);
+
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    Spinner unitSpinner = (Spinner) findViewById(R.id.SelectAssignmentSp);
+                    Log.d(TAG, "Selected spinner " + R.id.SelectAssignmentSp);
+                    unitSpinner.setAdapter(adapter);
+                }
+
+                else {
+                    Log.d(TAG, "Exception found: " + exception.getMessage());
+                }
+            }
+        });
+    }
+
+    void refreshGroupDropDown(String field, String condition){
+
+        Log.d(TAG, "Refreshing group dropdown");
+        // This is how a basic query is executed, in this case all IDs
+        mClient.getTable(LabGroup.class).where().field(field).eq(condition).execute(new TableQueryCallback<LabGroup>() {
+
+            // Listener that automatically gets set for the result of the transaction with Azure
+            @Override
+            public void onCompleted(java.util.List<LabGroup> result, int count, Exception exception, ServiceFilterResponse response) {
+
+                if (exception == null) {
+                    // Great success in refreshing
+                    // Do something if you wish, result contains your data
+                    List<Integer> unitSpinnerList = new ArrayList<>();
+
+                    Log.d(TAG, "Dropdown content successfully retrieved from cloud");
+
+                    for (LabGroup unit : result) {
+                        if (!(unitSpinnerList.contains(unit.getLabGroupNumber()))) {
+                            unitSpinnerList.add(unit.getLabGroupNumber());
+                        }
+                    }
+
+                    ArrayAdapter<Integer> adapter = new ArrayAdapter<>(
+                            getApplicationContext(), android.R.layout.simple_spinner_item, unitSpinnerList);
+
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    Spinner unitSpinner = (Spinner) findViewById(R.id.SelectGroupSp);
+                    Log.d(TAG, "Selected spinner " + R.id.SelectGroupSp);
+                    unitSpinner.setAdapter(adapter);
+                }
+
+                else {
+                    Log.d(TAG, "Exception found: " + exception.getMessage());
+                }
+            }
+        });
+    }
+
+    void refreshStudentDropDown(String field, String condition){
+
+        Log.d(TAG, "Refreshing student dropdown");
+        // This is how a basic query is executed, in this case all IDs
+        mClient.getTable(LabGroup.class).where().field(field).eq(condition).execute(new TableQueryCallback<LabGroup>() {
+
+            // Listener that automatically gets set for the result of the transaction with Azure
+            @Override
+            public void onCompleted(java.util.List<LabGroup> result, int count, Exception exception, ServiceFilterResponse response) {
+
+                if (exception == null) {
+                    // Great success in refreshing
+                    // Do something if you wish, result contains your data
+                    List<Integer> unitSpinnerList = new ArrayList<>();
+
+                    Log.d(TAG, "Dropdown content successfully retrieved from cloud");
+
+                    for (LabGroup unit : result) {
+                        if (!(unitSpinnerList.contains(unit.getLabGroupStudentID()))) {
+                            unitSpinnerList.add(unit.getLabGroupStudentID());
+                        }
+                    }
+
+                    ArrayAdapter<Integer> adapter = new ArrayAdapter<>(
+                            getApplicationContext(), android.R.layout.simple_spinner_item, unitSpinnerList);
+
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    Spinner unitSpinner = (Spinner) findViewById(R.id.SelectStudentSp);
+                    Log.d(TAG, "Selected spinner " + R.id.SelectStudentSp);
+                    unitSpinner.setAdapter(adapter);
+                }
+
+                else {
+                    Log.d(TAG, "Exception found: " + exception.getMessage());
+                }
+            }
+        });
+    }
+
+    void addItemsToTable(MarkSchemePart lab){
 
         Log.d(TAG, "in function");
         // Insert statement, directly pass the container class
-        mClient.getTable(StudentTotalMarks.class).insert(lab, new TableOperationCallback<StudentTotalMarks>() {
+        mClient.getTable(MarkSchemePart.class).insert(lab, new TableOperationCallback<MarkSchemePart>() {
 
             @Override
-            public void onCompleted(StudentTotalMarks entity, Exception exception, ServiceFilterResponse response) {
+            public void onCompleted(MarkSchemePart entity, Exception exception, ServiceFilterResponse response) {
 
                 Log.d(TAG, "in inner function");
 

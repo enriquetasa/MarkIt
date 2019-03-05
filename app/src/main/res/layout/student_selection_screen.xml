@@ -31,11 +31,11 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_margin="16dp"
-        android:textColor="@color/colorGrey"
         android:ellipsize="marquee"
         android:textAlignment="inherit"
-        android:textStyle="bold"
+        android:textColor="@android:color/black"
         android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/SelectUnitTV"
         app:layout_constraintTop_toBottomOf="@+id/SelectUnitTV" />
 
@@ -60,7 +60,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_margin="16dp"
-        android:textColor="@color/colorGrey"
+        android:textColor="@android:color/black"
         android:ellipsize="marquee"
         android:textAlignment="inherit"
         android:textStyle="bold"
@@ -93,7 +93,7 @@
         android:textAlignment="inherit"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:textColor="@color/colorGrey"
+        android:textColor="@android:color/black"
         app:layout_constraintStart_toStartOf="@+id/SelectGroupTV"
         app:layout_constraintTop_toBottomOf="@+id/SelectGroupTV" />
 
@@ -122,7 +122,7 @@
         android:textAlignment="inherit"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:textColor="@color/colorGrey"
+        android:textColor="@android:color/black"
         app:layout_constraintStart_toStartOf="@+id/SelectStudentTV"
         app:layout_constraintTop_toBottomOf="@+id/SelectStudentTV" />
 

@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +19,10 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+
 public class MarkStudent extends AppCompatActivity {
+
+    static String TAG = "TASA_LOG:";
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -52,6 +56,24 @@ public class MarkStudent extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        Log.d(TAG, "Finished with onCreate()");
+
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+
+        // TODO - here is where the issue with reception of the Bundle lies, must debug to see exactly where it dies.
+
+        /**Bundle receivedInfo = getIntent().getExtras();
+        String unitSelected = receivedInfo.getString("unit");
+        int assignmentSelected = receivedInfo.getInt("assignment");
+        int groupSelected = receivedInfo.getInt("group");
+        int studentIDSelected = receivedInfo.getInt("studentID");
+
+        TextView text = (TextView) findViewById(R.id.textView2);
+        text.setText(unitSelected);**/
     }
 
 
@@ -106,8 +128,6 @@ public class MarkStudent extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_mark_student, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;
         }
     }

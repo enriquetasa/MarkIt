@@ -1,5 +1,7 @@
 package com.tarambana.markit.DataContainers;
 
+import java.util.Date;
+
 public class LabGroup {
 
     @com.google.gson.annotations.SerializedName("id")
@@ -19,6 +21,9 @@ public class LabGroup {
 
     @com.google.gson.annotations.SerializedName("LabGroupUnit")
     public String labGroupUnit;
+
+    @com.google.gson.annotations.SerializedName("LabGroupDate")
+    public Date labGroupDate;
 
     public int getLabGroupStudentID() {
         return labGroupStudentID;
@@ -58,5 +63,13 @@ public class LabGroup {
 
     public void setLabGroupUnit(String labGroupUnit) {
         this.labGroupUnit = labGroupUnit;
+    }
+
+    public Date getLabGroupDate() {
+        return labGroupDate;
+    }
+
+    public void setLabGroupDate(Date labGroupDate) {
+        this.labGroupDate = labGroupDate;
     }
 }
