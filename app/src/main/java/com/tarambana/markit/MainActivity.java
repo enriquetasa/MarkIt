@@ -225,8 +225,6 @@ public class MainActivity extends AppCompatActivity
                         if (!(unitSpinnerList.contains(unit.getLabGroupUnit()))) {
                             unitSpinnerList.add(unit.getLabGroupUnit());
                         }
-
-                        Log.d(TAG, "got passed it bwana");
                     }
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(
