@@ -19,21 +19,12 @@ import android.widget.Spinner;
 
 import com.microsoft.windowsazure.mobileservices.*;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
-import com.microsoft.windowsazure.mobileservices.table.TableOperationCallback;
 import com.microsoft.windowsazure.mobileservices.table.TableQueryCallback;
 import com.tarambana.markit.DataContainers.LabGroup;
-import com.tarambana.markit.DataContainers.MarkScheme;
-import com.tarambana.markit.DataContainers.MarkSchemePart;
-import com.tarambana.markit.DataContainers.MarkSchemeSection;
-import com.tarambana.markit.DataContainers.Student;
-import com.tarambana.markit.DataContainers.StudentSectionMarks;
-import com.tarambana.markit.DataContainers.StudentTotalMarks;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.val;
 
 
 // TODO - this starter activity will effectively be the student select activity and therefore needs to have the logic and code in it
@@ -101,13 +92,6 @@ public class MainActivity extends AppCompatActivity
         // this is the only one that will actually run at runtime, the others need to launch as listeners once a certain spinner is clicked
         refreshUnitDropDown("deleted","false");
 
-    }
-
-    @Override
-    protected void onStart(){
-        super.onStart();
-
-        final Spinner unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
         unitSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -120,7 +104,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        final Spinner assignmentSpinner = (Spinner) findViewById(R.id.SelectAssignmentSp);
         assignmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -133,7 +116,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        final Spinner groupSpinner = (Spinner) findViewById(R.id.SelectGroupSp);
         groupSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -355,31 +337,6 @@ public class MainActivity extends AppCompatActivity
 
                 else {
                     Log.d(TAG, "Exception found: " + exception.getMessage());
-                }
-            }
-        });
-    }
-
-    void addItemsToTable(MarkSchemePart lab){
-
-        Log.d(TAG, "in function");
-        // Insert statement, directly pass the container class
-        mClient.getTable(MarkSchemePart.class).insert(lab, new TableOperationCallback<MarkSchemePart>() {
-
-            @Override
-            public void onCompleted(MarkSchemePart entity, Exception exception, ServiceFilterResponse response) {
-
-                Log.d(TAG, "in inner function");
-
-
-                // Always check for exceptions/completion
-                if (exception == null){
-                    Log.d(TAG, "Written ok");
-                }
-
-                else{
-                    exception.printStackTrace();
-                    Log.d(TAG, "exception caught" + exception.getMessage());
                 }
             }
         });
