@@ -4,9 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="500dp"
-    tools:context=".MarkStudent$PlaceholderFragment">
+    android:layout_height="wrap_content">
+    <!-- Dummy item to prevent AutoCompleteTextView from receiving focus -->
+    <LinearLayout
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
 
+    <!-- :nextFocusUp and :nextFocusLeft have been set to the id of this component
+    to prevent the dummy from receiving focus again -->
+    <AutoCompleteTextView
+        android:id="@+id/autotext"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:nextFocusLeft="@id/autotext"
+        android:nextFocusUp="@id/autotext" />
 
     <TextView
         android:id="@+id/section_label"
@@ -34,13 +47,68 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <CheckBox
-        android:id="@+id/FirstMarkCB"
+        android:id="@+id/markCB1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="32dp"
         android:text="This is where marks will go"
-        app:layout_constraintBottom_toTopOf="@+id/CommentsET"
-        app:layout_constraintStart_toStartOf="@+id/CommentsET" />
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/sectionTitleTV"
+        app:layout_constraintTop_toBottomOf="@+id/sectionTitleTV" />
+
+    <CheckBox
+        android:id="@+id/markCB2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="This is where marks will go"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/markCB1"
+        app:layout_constraintTop_toBottomOf="@+id/markCB1" />
+
+    <CheckBox
+        android:id="@+id/markCB3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="This is where marks will go"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/markCB1"
+        app:layout_constraintTop_toBottomOf="@+id/markCB2" />
+
+    <CheckBox
+        android:id="@+id/markCB4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="This is where marks will go"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/markCB1"
+        app:layout_constraintTop_toBottomOf="@+id/markCB3" />
+
+    <CheckBox
+        android:id="@+id/markCB5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="This is where marks will go"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/markCB1"
+        app:layout_constraintTop_toBottomOf="@+id/markCB4" />
+
+
+    <TextView
+        android:id="@+id/sectionTitleTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="60dp"
+        android:text="Section Title Here"
+        android:textColor="@android:color/black"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

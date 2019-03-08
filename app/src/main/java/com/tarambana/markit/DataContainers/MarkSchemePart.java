@@ -14,6 +14,14 @@ public class MarkSchemePart {
     @com.google.gson.annotations.SerializedName("PartPartID")
     public int partID;
 
+    public int getPartID() {
+        return partID;
+    }
+
+    public void setPartID(int partID) {
+        this.partID = partID;
+    }
+
     @com.google.gson.annotations.SerializedName("PartName")
     public String partName;
 

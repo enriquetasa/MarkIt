@@ -1,67 +1,92 @@
 package com.tarambana.markit;
 
-import android.app.Activity;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
-import android.widget.TextView;
-
+import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
+import com.microsoft.windowsazure.mobileservices.table.TableQueryCallback;
 import com.tarambana.markit.Adapters.SectionsPagerAdapter;
+import com.tarambana.markit.DataContainers.MarkSchemePart;
+import com.tarambana.markit.DataContainers.MarkSchemeSection;
+import com.tarambana.markit.DataContainers.Student;
+import com.tarambana.markit.DataContainers.localAssignment;
+
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MarkStudent extends AppCompatActivity {
 
     static String TAG = "TASA_LOG:";
 
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private MobileServiceClient mClient;
 
-    private ViewPager mViewPager;
+    public localAssignment currentAssignment = new localAssignment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mark_student);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        try {
+            Log.d(TAG, "Attempting to connect to Azure site");
 
-        // Find the view pager that will allow the user to swipe between fragments
-        ViewPager viewPager = (ViewPager) findViewById(R.id.container);
-        viewPager.setOffscreenPageLimit(5);            // A maximum of 5 fragments (Sections) will be loaded at a time. If a certain mark scheme has more to display, the will be generated automatically when the cursor is "near them"
+            mClient = new MobileServiceClient(
+                    "https://bookchoice.azurewebsites.net",
+                    this
+            );
 
-        // Create an adapter that knows which fragment should be shown on each page
-        SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set the adapter onto the view pager
-        viewPager.setAdapter(adapter);
-
-        // Give the TabLayout the ViewPager
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        } catch (MalformedURLException e){
+            Log.d(TAG, "Malformed URL in connection to Azure site");
+            e.printStackTrace();
+        }
 
         Bundle receivedInfo = getIntent().getExtras();
         String unitSelected = receivedInfo.getString("unit");
         int assignmentSelected = receivedInfo.getInt("assignment");
         int groupSelected = receivedInfo.getInt("group");
         int studentIDSelected = receivedInfo.getInt("studentID");
+        Log.d(TAG, "Bundle retrieved correctly in 2nd activity");
 
-        // TODO - some logic to get the data we need for the setup of the pager and the mark scheme itself I guess
+        currentAssignment.setStudentID(studentIDSelected);
+        currentAssignment.setAssignmentNumber(assignmentSelected);
+        getAssignmentPartsFromCloud("PARTASSIGNMENTID", assignmentSelected);
+        Log.d(TAG, "Got assignment parts from cloud");
+        getAssignmentSectionsFromCloud("SECTIONASSIGNMENTID", assignmentSelected);
+        Log.d(TAG, "Got assignment sections from cloud");
+        getStudentInfoFromCloud("STUDENTID", studentIDSelected);
+        Log.d(TAG, "Got student information from cloud");
+    }
 
+    private void setUpTabLayoutFragments() {
+        Log.d(TAG, "Setting up tab layout");
 
-        Log.d(TAG, "Finished with onCreate()");
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.container);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+
+        setSupportActionBar(toolbar);
+
+        viewPager.setOffscreenPageLimit(5);
+
+        SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager(),currentAssignment);
+        Log.d(TAG, "TabLayout Adapter built");
+
+        // PETA AQUI
+        viewPager.setAdapter(adapter);
+        Log.d(TAG, "Adapter set");
+
+        tabLayout.setupWithViewPager(viewPager);
+        Log.d(TAG, "View pager set");
     }
 
     // region TODO - deal with the navigation bar
@@ -89,6 +114,101 @@ public class MarkStudent extends AppCompatActivity {
     }
 
     //endregion
-}
 
-// TODO - So here's the deal. This activity gets launched and forms itself but also launches a fragment "fragment_mark_student.xml" that needs to be dealt with (where the information must go and be processed). I feel like I need to understand the whole ViewPager system to be able to follow the flow of the application, set up what I need and then query the cloud and get the data I need.
+    void getAssignmentPartsFromCloud(String field, int condition){
+
+        Log.d(TAG, "Getting assignment parts from cloud");
+
+        mClient.getTable(MarkSchemePart.class).where().field(field).eq(condition).execute(new TableQueryCallback<MarkSchemePart>() {
+
+            @Override
+            public void onCompleted(java.util.List<MarkSchemePart> result, int count, Exception exception, ServiceFilterResponse response) {
+
+                if (exception == null) {
+
+                    List<String> partNames = new ArrayList<>();
+                    List<Integer> partMarks = new ArrayList<>();
+                    List<Integer> partNumbers = new ArrayList<>();
+
+                    for (MarkSchemePart part : result) {
+                        partNames.add(part.getPartName());
+                        partMarks.add(part.getPartAvailableMarks());
+                        partNumbers.add(part.getPartID());
+                    }
+
+                    Log.d(TAG, "Found " + partNames.size() + " assignment parts");
+
+                    currentAssignment.setPartNames(partNames);
+                    currentAssignment.setPartNumbers(partNumbers);
+                    currentAssignment.setPartMarks(partMarks);
+                }
+
+                else {
+                    Log.d(TAG, "Exception found: " + exception.getMessage());
+                }
+            }
+        });
+    }
+
+    void getAssignmentSectionsFromCloud(String field, int condition){
+
+        Log.d(TAG, "Getting assignment parts from cloud");
+
+        mClient.getTable(MarkSchemeSection.class).where().field(field).eq(condition).execute(new TableQueryCallback<MarkSchemeSection>() {
+
+            @Override
+            public void onCompleted(java.util.List<MarkSchemeSection> result, int count, Exception exception, ServiceFilterResponse response) {
+
+                if (exception == null) {
+
+                    List<String> sectionNames = new ArrayList<>();
+                    List<Integer> sectionMarks = new ArrayList<>();
+                    List<Integer> sectionNumbers = new ArrayList<>();
+
+                    for (MarkSchemeSection section : result) {
+                        sectionNames.add(section.getSectionName());
+                        sectionMarks.add(section.getSectionAvailableMarks());
+                        sectionNumbers.add(section.getSectionID());
+                    }
+
+                    Log.d(TAG, "Found " + sectionNames.size() + " assignment sections");
+
+                    currentAssignment.setSectionNames(sectionNames);
+                    currentAssignment.setSectionNumbers(sectionNumbers);
+                    currentAssignment.setSectionMarks(sectionMarks);
+                }
+
+                else {
+                    Log.d(TAG, "Exception found: " + exception.getMessage());
+                }
+            }
+        });
+    }
+
+    void getStudentInfoFromCloud(String field, int condition){
+
+        Log.d(TAG, "Getting assignment parts from cloud");
+
+        mClient.getTable(Student.class).where().field(field).eq(condition).execute(new TableQueryCallback<Student>() {
+
+            @Override
+            public void onCompleted(java.util.List<Student> result, int count, Exception exception, ServiceFilterResponse response) {
+
+                if (exception == null) {
+
+                    for (Student student : result) {
+                        currentAssignment.setStudentFirstName(student.getStudentFirstName());
+                        currentAssignment.setStudentFirstName(student.getStudentFirstName());
+                    }
+
+                    // Problem with synchronisation here
+                    setUpTabLayoutFragments();
+                }
+
+                else {
+                    Log.d(TAG, "Exception found: " + exception.getMessage());
+                }
+            }
+        });
+    }
+}

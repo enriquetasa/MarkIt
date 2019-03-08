@@ -36,6 +36,10 @@ public class MainActivity extends AppCompatActivity
 
     private MobileServiceClient mClient;
 
+    boolean firstTimeUnit = false;
+    boolean firstTimeAssignment = false;
+    boolean firstTimeGroup = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +89,7 @@ public class MainActivity extends AppCompatActivity
                 selectionInfo.putInt("group", (int)groupSpinner.getSelectedItem());
                 selectionInfo.putInt("studentID", (int)studentSpinner.getSelectedItem());
                 intent.putExtras(selectionInfo);
+                Log.d(TAG, "Going to next activity");
                 startActivity(intent);
             }
         });
@@ -95,7 +100,10 @@ public class MainActivity extends AppCompatActivity
         unitSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (firstTimeUnit){
                 refreshAssignmentDropDown("LABGROUPUNIT", unitSpinner.getSelectedItem().toString());
+                }
+                firstTimeUnit = true;
             }
 
             @Override
@@ -107,7 +115,10 @@ public class MainActivity extends AppCompatActivity
         assignmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (firstTimeAssignment){
                 refreshGroupDropDown("LABGROUPASSIGNMENTID", assignmentSpinner.getSelectedItem().toString());
+              }
+              firstTimeAssignment = true;
             }
 
             @Override
@@ -119,7 +130,11 @@ public class MainActivity extends AppCompatActivity
         groupSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (firstTimeGroup){
                 refreshStudentDropDown("LABGROUPNUMBER", groupSpinner.getSelectedItem().toString());
+                }
+
+                firstTimeGroup = true;
             }
 
             @Override
@@ -130,6 +145,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    // region TODO - deal with navigation bar
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -185,9 +201,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    // endregion
+
     void refreshUnitDropDown(String field, String condition){
 
-        Log.d(TAG, "Refreshing unit dropdown");
+        Log.d(TAG, "Refreshing course unit dropdown");
         // This is how a basic query is executed, in this case all IDs
         mClient.getTable(LabGroup.class).where().field(field).eq(condition).execute(new TableQueryCallback<LabGroup>() {
 
@@ -210,11 +228,10 @@ public class MainActivity extends AppCompatActivity
                     }
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                            getApplicationContext(), android.R.layout.simple_spinner_item, unitSpinnerList);
+                            getBaseContext(), android.R.layout.simple_spinner_item, unitSpinnerList);
 
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     Spinner unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
-                    Log.d(TAG, "Selected spinner " + R.id.SelectUnitSp);
                     unitSpinner.setAdapter(adapter);
                 }
 
@@ -239,6 +256,7 @@ public class MainActivity extends AppCompatActivity
                     // Great success in refreshing
                     // Do something if you wish, result contains your data
                     List<Integer> unitSpinnerList = new ArrayList<>();
+                    unitSpinnerList.add(3142);
 
                     Log.d(TAG, "Dropdown content successfully retrieved from cloud");
 
@@ -249,11 +267,10 @@ public class MainActivity extends AppCompatActivity
                     }
 
                     ArrayAdapter<Integer> adapter = new ArrayAdapter<>(
-                            getApplicationContext(), android.R.layout.simple_spinner_item, unitSpinnerList);
+                            getBaseContext(), android.R.layout.simple_spinner_item, unitSpinnerList);
 
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     Spinner unitSpinner = (Spinner) findViewById(R.id.SelectAssignmentSp);
-                    Log.d(TAG, "Selected spinner " + R.id.SelectAssignmentSp);
                     unitSpinner.setAdapter(adapter);
                 }
 
@@ -278,6 +295,7 @@ public class MainActivity extends AppCompatActivity
                     // Great success in refreshing
                     // Do something if you wish, result contains your data
                     List<Integer> unitSpinnerList = new ArrayList<>();
+                    unitSpinnerList.add(3142);
 
                     Log.d(TAG, "Dropdown content successfully retrieved from cloud");
 
@@ -288,11 +306,10 @@ public class MainActivity extends AppCompatActivity
                     }
 
                     ArrayAdapter<Integer> adapter = new ArrayAdapter<>(
-                            getApplicationContext(), android.R.layout.simple_spinner_item, unitSpinnerList);
+                            getBaseContext(), android.R.layout.simple_spinner_item, unitSpinnerList);
 
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     Spinner unitSpinner = (Spinner) findViewById(R.id.SelectGroupSp);
-                    Log.d(TAG, "Selected spinner " + R.id.SelectGroupSp);
                     unitSpinner.setAdapter(adapter);
                 }
 
@@ -317,6 +334,7 @@ public class MainActivity extends AppCompatActivity
                     // Great success in refreshing
                     // Do something if you wish, result contains your data
                     List<Integer> unitSpinnerList = new ArrayList<>();
+                    unitSpinnerList.add(3142);
 
                     Log.d(TAG, "Dropdown content successfully retrieved from cloud");
 
@@ -327,11 +345,10 @@ public class MainActivity extends AppCompatActivity
                     }
 
                     ArrayAdapter<Integer> adapter = new ArrayAdapter<>(
-                            getApplicationContext(), android.R.layout.simple_spinner_item, unitSpinnerList);
+                            getBaseContext(), android.R.layout.simple_spinner_item, unitSpinnerList);
 
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     Spinner unitSpinner = (Spinner) findViewById(R.id.SelectStudentSp);
-                    Log.d(TAG, "Selected spinner " + R.id.SelectStudentSp);
                     unitSpinner.setAdapter(adapter);
                 }
 
