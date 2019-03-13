@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
@@ -33,10 +34,6 @@ public class MarkStudent extends AppCompatActivity {
 
     public localAssignment currentAssignment = new localAssignment();
 
-    boolean assignmentPartsReady = false;
-    boolean assignmentSectionsReady = false;
-    boolean studentInfoReady = false;
-    boolean doneAlready = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +60,12 @@ public class MarkStudent extends AppCompatActivity {
         int studentIDSelected = receivedInfo.getInt("studentID");
         Log.d(TAG, "Bundle retrieved correctly in 2nd activity");
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(unitSelected + " | Assignment " + assignmentSelected + " | Group " + groupSelected);
+
+        TextView studentIDTV = (TextView) findViewById(R.id.StudentIDTV);
+        studentIDTV.setText("ID: " + studentIDSelected);
+
         currentAssignment.setStudentID(studentIDSelected);
         currentAssignment.setAssignmentNumber(assignmentSelected);
 
@@ -70,8 +73,6 @@ public class MarkStudent extends AppCompatActivity {
     }
 
     private void setUpTabLayoutFragments() {
-
-       //if (studentInfoReady && assignmentPartsReady && assignmentSectionsReady && !doneAlready){
 
         Log.d(TAG, "Setting up tab layout");
 
@@ -93,16 +94,6 @@ public class MarkStudent extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         Log.d(TAG, "View pager set");
 
-        /**
-        doneAlready = true;
-        return;
-       }
-
-        else if (!doneAlready) {
-          setUpTabLayoutFragments();
-        }
-
-        else return; **/
     }
 
     // region TODO - deal with the navigation bar
@@ -225,8 +216,6 @@ public class MarkStudent extends AppCompatActivity {
                         currentAssignment.setStudentFirstName(student.getStudentFirstName());
                     }
 
-                    // Problem with synchronisation here
-                    studentInfoReady = true;
                     setUpTabLayoutFragments();
                 }
 
