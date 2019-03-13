@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.TableQueryCallback;
+import com.microsoft.windowsazure.mobileservices.table.query.QueryOrder;
 import com.tarambana.markit.Adapters.SectionsPagerAdapter;
 import com.tarambana.markit.DataContainers.MarkSchemePart;
 import com.tarambana.markit.DataContainers.MarkSchemeSection;
@@ -31,6 +32,11 @@ public class MarkStudent extends AppCompatActivity {
     private MobileServiceClient mClient;
 
     public localAssignment currentAssignment = new localAssignment();
+
+    boolean assignmentPartsReady = false;
+    boolean assignmentSectionsReady = false;
+    boolean studentInfoReady = false;
+    boolean doneAlready = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,15 +65,14 @@ public class MarkStudent extends AppCompatActivity {
 
         currentAssignment.setStudentID(studentIDSelected);
         currentAssignment.setAssignmentNumber(assignmentSelected);
-        getAssignmentPartsFromCloud("PARTASSIGNMENTID", assignmentSelected);
-        Log.d(TAG, "Got assignment parts from cloud");
-        getAssignmentSectionsFromCloud("SECTIONASSIGNMENTID", assignmentSelected);
-        Log.d(TAG, "Got assignment sections from cloud");
-        getStudentInfoFromCloud("STUDENTID", studentIDSelected);
-        Log.d(TAG, "Got student information from cloud");
+
+        getAssignmentPartsFromCloud("PARTASSIGNMENTID", assignmentSelected, studentIDSelected);
     }
 
     private void setUpTabLayoutFragments() {
+
+       //if (studentInfoReady && assignmentPartsReady && assignmentSectionsReady && !doneAlready){
+
         Log.d(TAG, "Setting up tab layout");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -78,7 +83,7 @@ public class MarkStudent extends AppCompatActivity {
 
         viewPager.setOffscreenPageLimit(5);
 
-        SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager(),currentAssignment);
+        SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager(), currentAssignment);
         Log.d(TAG, "TabLayout Adapter built");
 
         // PETA AQUI
@@ -87,6 +92,17 @@ public class MarkStudent extends AppCompatActivity {
 
         tabLayout.setupWithViewPager(viewPager);
         Log.d(TAG, "View pager set");
+
+        /**
+        doneAlready = true;
+        return;
+       }
+
+        else if (!doneAlready) {
+          setUpTabLayoutFragments();
+        }
+
+        else return; **/
     }
 
     // region TODO - deal with the navigation bar
@@ -115,14 +131,16 @@ public class MarkStudent extends AppCompatActivity {
 
     //endregion
 
-    void getAssignmentPartsFromCloud(String field, int condition){
+    void getAssignmentPartsFromCloud(String field, final int condition, final int studentID){
 
         Log.d(TAG, "Getting assignment parts from cloud");
 
-        mClient.getTable(MarkSchemePart.class).where().field(field).eq(condition).execute(new TableQueryCallback<MarkSchemePart>() {
+        mClient.getTable(MarkSchemePart.class).where().field(field).eq(condition).orderBy("PARTSECTIONID", QueryOrder.Ascending).orderBy("PARTPARTID", QueryOrder.Ascending)
+                        .execute(new TableQueryCallback<MarkSchemePart>() {
 
             @Override
             public void onCompleted(java.util.List<MarkSchemePart> result, int count, Exception exception, ServiceFilterResponse response) {
+
 
                 if (exception == null) {
 
@@ -141,6 +159,8 @@ public class MarkStudent extends AppCompatActivity {
                     currentAssignment.setPartNames(partNames);
                     currentAssignment.setPartNumbers(partNumbers);
                     currentAssignment.setPartMarks(partMarks);
+
+                    getAssignmentSectionsFromCloud("SECTIONASSIGNMENTID", condition, studentID);
                 }
 
                 else {
@@ -150,11 +170,12 @@ public class MarkStudent extends AppCompatActivity {
         });
     }
 
-    void getAssignmentSectionsFromCloud(String field, int condition){
+    void getAssignmentSectionsFromCloud(String field, int condition, final int studentID){
 
         Log.d(TAG, "Getting assignment parts from cloud");
 
-        mClient.getTable(MarkSchemeSection.class).where().field(field).eq(condition).execute(new TableQueryCallback<MarkSchemeSection>() {
+        mClient.getTable(MarkSchemeSection.class).where().field(field).eq(condition)
+                .orderBy("SECTIONID", QueryOrder.Ascending).execute(new TableQueryCallback<MarkSchemeSection>() {
 
             @Override
             public void onCompleted(java.util.List<MarkSchemeSection> result, int count, Exception exception, ServiceFilterResponse response) {
@@ -176,6 +197,8 @@ public class MarkStudent extends AppCompatActivity {
                     currentAssignment.setSectionNames(sectionNames);
                     currentAssignment.setSectionNumbers(sectionNumbers);
                     currentAssignment.setSectionMarks(sectionMarks);
+
+                    getStudentInfoFromCloud("STUDENTID", studentID);
                 }
 
                 else {
@@ -189,7 +212,8 @@ public class MarkStudent extends AppCompatActivity {
 
         Log.d(TAG, "Getting assignment parts from cloud");
 
-        mClient.getTable(Student.class).where().field(field).eq(condition).execute(new TableQueryCallback<Student>() {
+        mClient.getTable(Student.class).where().field(field).eq(condition)
+                .orderBy("STUDENTID", QueryOrder.Ascending).execute(new TableQueryCallback<Student>() {
 
             @Override
             public void onCompleted(java.util.List<Student> result, int count, Exception exception, ServiceFilterResponse response) {
@@ -202,6 +226,7 @@ public class MarkStudent extends AppCompatActivity {
                     }
 
                     // Problem with synchronisation here
+                    studentInfoReady = true;
                     setUpTabLayoutFragments();
                 }
 

@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import com.microsoft.windowsazure.mobileservices.*;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.TableQueryCallback;
+import com.microsoft.windowsazure.mobileservices.table.query.QueryOrder;
 import com.tarambana.markit.DataContainers.LabGroup;
 
 import java.net.MalformedURLException;
@@ -207,7 +208,8 @@ public class MainActivity extends AppCompatActivity
 
         Log.d(TAG, "Refreshing course unit dropdown");
         // This is how a basic query is executed, in this case all IDs
-        mClient.getTable(LabGroup.class).where().field(field).eq(condition).execute(new TableQueryCallback<LabGroup>() {
+        mClient.getTable(LabGroup.class).where().field(field).eq(condition)
+                .execute(new TableQueryCallback<LabGroup>() {
 
             // Listener that automatically gets set for the result of the transaction with Azure
             @Override
@@ -246,7 +248,8 @@ public class MainActivity extends AppCompatActivity
 
         Log.d(TAG, "Refreshing assignment dropdown");
         // This is how a basic query is executed, in this case all IDs
-        mClient.getTable(LabGroup.class).where().field(field).eq(condition).execute(new TableQueryCallback<LabGroup>() {
+        mClient.getTable(LabGroup.class).where().field(field).eq(condition)
+                .orderBy("LABGROUPASSIGNMENTID", QueryOrder.Ascending).execute(new TableQueryCallback<LabGroup>() {
 
             // Listener that automatically gets set for the result of the transaction with Azure
             @Override
@@ -285,7 +288,8 @@ public class MainActivity extends AppCompatActivity
 
         Log.d(TAG, "Refreshing group dropdown");
         // This is how a basic query is executed, in this case all IDs
-        mClient.getTable(LabGroup.class).where().field(field).eq(condition).execute(new TableQueryCallback<LabGroup>() {
+        mClient.getTable(LabGroup.class).where().field(field).eq(condition)
+                .orderBy("LABGROUPNUMBER", QueryOrder.Ascending).execute(new TableQueryCallback<LabGroup>() {
 
             // Listener that automatically gets set for the result of the transaction with Azure
             @Override
@@ -324,7 +328,8 @@ public class MainActivity extends AppCompatActivity
 
         Log.d(TAG, "Refreshing student dropdown");
         // This is how a basic query is executed, in this case all IDs
-        mClient.getTable(LabGroup.class).where().field(field).eq(condition).execute(new TableQueryCallback<LabGroup>() {
+        mClient.getTable(LabGroup.class).where().field(field).eq(condition)
+                .orderBy("LABGROUPSTUDENTID", QueryOrder.Ascending).execute(new TableQueryCallback<LabGroup>() {
 
             // Listener that automatically gets set for the result of the transaction with Azure
             @Override
