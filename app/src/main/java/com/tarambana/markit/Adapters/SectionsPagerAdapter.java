@@ -1,11 +1,17 @@
 package com.tarambana.markit.Adapters;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.tarambana.markit.DataContainers.localAssignment;
+import com.tarambana.markit.DataContainers.localSection;
 import com.tarambana.markit.Fragments.MarkStudentFragment;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
@@ -16,32 +22,28 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         this.currentAssignment = inputAssignment;
     }
 
-    // TODO - must add the fragments here programatically
     @Override
     public Fragment getItem(int position) {
+
+        MarkStudentFragment fragment = new MarkStudentFragment();
+
         if (position == 0) {
-            MarkStudentFragment fragment = MarkStudentFragment.newInstance(currentAssignment, 0);
-            return fragment;
+            fragment = MarkStudentFragment.newInstance(SplitAssignmentIntoSection(currentAssignment, position + 1));
         } else if (position == 1){
-            MarkStudentFragment fragment = MarkStudentFragment.newInstance(currentAssignment, 1);
-            return fragment;
+            fragment = MarkStudentFragment.newInstance(SplitAssignmentIntoSection(currentAssignment, position + 1));
         } else if (position == 2){
-            MarkStudentFragment fragment = MarkStudentFragment.newInstance(currentAssignment, 2);
-            return fragment;
+            fragment = MarkStudentFragment.newInstance(SplitAssignmentIntoSection(currentAssignment, position + 1));
         } else if (position == 3) {
-            MarkStudentFragment fragment = MarkStudentFragment.newInstance(currentAssignment, 3);
-            return fragment;
-        } else if (position == 4) {
-            MarkStudentFragment fragment = MarkStudentFragment.newInstance(currentAssignment, 4);
-            return fragment;
-        }else {
-            return new MarkStudentFragment();
+            fragment = MarkStudentFragment.newInstance(SplitAssignmentIntoSection(currentAssignment, position + 1));
+        } else {
+            fragment = MarkStudentFragment.newInstance(SplitAssignmentIntoSection(currentAssignment, position + 1));
         }
+        return fragment;
     }
 
     @Override
     public int getCount() {
-        return currentAssignment.sectionMarks.size();
+        return currentAssignment.sectionIDSectionName.size();
     }
 
     @Override
@@ -49,19 +51,63 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         switch (position) {
             case 0:
-                return (currentAssignment.assignmentNumber + "." + currentAssignment.sectionNumbers.get(0));
+                return (currentAssignment.assignmentNumber + ".1");
             case 1:
-                return (currentAssignment.assignmentNumber + "." + currentAssignment.sectionNumbers.get(1));
+                return (currentAssignment.assignmentNumber + ".2");
             case 2:
-                return (currentAssignment.assignmentNumber + "." + currentAssignment.sectionNumbers.get(2));
+                return (currentAssignment.assignmentNumber + ".3");
             case 3:
-                return (currentAssignment.assignmentNumber + "." + currentAssignment.sectionNumbers.get(3));
+                return (currentAssignment.assignmentNumber + ".4");
             case 4:
-                return (currentAssignment.assignmentNumber + "." + currentAssignment.sectionNumbers.get(4));
+                return (currentAssignment.assignmentNumber + ".5");
             default:
                 return null;
         }
     }
+
+
+    // TODO - CHECK this function is supposed to return a Section class according to sectionID for a fragment to implement
+    Bundle SplitAssignmentIntoSection(localAssignment inputAssignment, int sectionID){
+        Bundle bundleToReturn = new Bundle();
+        localSection sectionToReturn = new localSection();
+
+        bundleToReturn.putInt("assignmentID", inputAssignment.getAssignmentNumber());
+        bundleToReturn.putInt("sectionID", sectionID);
+        bundleToReturn.putString("sectionName", inputAssignment.getSectionIDSectionName().get(sectionID));
+
+        for(int i = 1; i < inputAssignment.partIDSectionID.size(); i++){
+
+            // if you're in here, the section id corresponds to what you want, so assemble the localSection with these
+                List<Integer> partIDList = getAllKeysForValueInHashMap(inputAssignment.partIDSectionID, sectionID);
+
+                for (int j = 0; j < partIDList.size(); j++){
+
+                    bundleToReturn.putInt("partID" + j, partIDList.get(j));
+                    bundleToReturn.putString("partName" + j, inputAssignment.getPartIDPartName().get(partIDList.get(j)));
+                    bundleToReturn.putInt("partMarks" + j, inputAssignment.getPartNamePartMark().get(inputAssignment.getPartIDPartName().get(partIDList.get(j))));
+                }
+        }
+
+        return  bundleToReturn;
+    }
+
+    List<Integer> getAllKeysForValueInHashMap(Map<Integer, Integer> inputHashMap, int value)
+    {
+        List<Integer> keyToReturn = new ArrayList<>();
+
+        if(inputHashMap.containsValue(value))
+        {
+            for (Map.Entry<Integer, Integer> entry : inputHashMap.entrySet())
+            {
+                if (entry.getValue().equals(value))
+                {
+                    keyToReturn.add(entry.getKey());
+                }
+            }
+        }
+        return keyToReturn;
+    }
+
 }
 
-// TODO - note that the maximum amount of fragments we take is 5
+// Note that the maximum amount of fragments we take is 5

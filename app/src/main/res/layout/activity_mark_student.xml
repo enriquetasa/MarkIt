@@ -26,7 +26,6 @@
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
                 app:title="@string/app_name">
-                <!-- TODO - this is where the student ID name has to come in -->
 
 
             </android.support.v7.widget.Toolbar>
@@ -63,7 +62,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:paddingRight="10dp"
-            android:text="Save" />
+            android:text="@string/Save_Button_Text" />
 
         <TextView
             android:id="@+id/TotalMarksTV"
@@ -74,7 +73,7 @@
             android:layout_marginBottom="25dp"
             android:layout_toLeftOf="@+id/SaveBtn"
             android:gravity="center"
-            android:hint="Total Marks here"
+            android:hint="@string/Total_Marks_Text"
             android:textSize="14sp" />
 
         <TextView
@@ -89,8 +88,8 @@
             android:layout_marginRight="0dp"
             android:layout_marginBottom="25dp"
             android:layout_toStartOf="@+id/TotalMarksTV"
-            android:hint="Student ID here"
-            android:text="ID: "
+            android:hint="@string/Student_ID_Hint"
+            android:text="@string/ID_Tag_Text "
             android:textSize="14sp" />
 
     </RelativeLayout>

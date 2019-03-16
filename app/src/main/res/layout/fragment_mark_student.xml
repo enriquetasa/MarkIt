@@ -41,7 +41,7 @@
         android:layout_marginStart="56dp"
         android:layout_marginTop="788dp"
         android:ems="10"
-        android:hint="Comments"
+        android:hint="@string/Comments_Hint"
         android:inputType="text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -51,7 +51,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="This is where marks will go"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@+id/sectionTitleTV"
         app:layout_constraintTop_toBottomOf="@+id/sectionTitleTV" />
@@ -61,7 +60,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="This is where marks will go"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@+id/markCB1"
         app:layout_constraintTop_toBottomOf="@+id/markCB1" />
@@ -71,7 +69,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="This is where marks will go"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@+id/markCB1"
         app:layout_constraintTop_toBottomOf="@+id/markCB2" />
@@ -81,7 +78,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="This is where marks will go"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@+id/markCB1"
         app:layout_constraintTop_toBottomOf="@+id/markCB3" />
@@ -91,7 +87,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="This is where marks will go"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@+id/markCB1"
         app:layout_constraintTop_toBottomOf="@+id/markCB4" />
@@ -101,9 +96,8 @@
         android:id="@+id/sectionTitleTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="140dp"
-        android:text="Section Title Here"
         android:textColor="@android:color/black"
         android:textSize="36sp"
         android:textStyle="bold"

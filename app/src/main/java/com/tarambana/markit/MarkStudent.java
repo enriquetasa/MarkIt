@@ -22,9 +22,6 @@ import com.tarambana.markit.DataContainers.Student;
 import com.tarambana.markit.DataContainers.localAssignment;
 
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class MarkStudent extends AppCompatActivity {
 
@@ -33,7 +30,6 @@ public class MarkStudent extends AppCompatActivity {
     private MobileServiceClient mClient;
 
     public localAssignment currentAssignment = new localAssignment();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +44,7 @@ public class MarkStudent extends AppCompatActivity {
                     this
             );
 
-        } catch (MalformedURLException e){
+        } catch (MalformedURLException e) {
             Log.d(TAG, "Malformed URL in connection to Azure site");
             e.printStackTrace();
         }
@@ -69,7 +65,9 @@ public class MarkStudent extends AppCompatActivity {
         currentAssignment.setStudentID(studentIDSelected);
         currentAssignment.setAssignmentNumber(assignmentSelected);
 
-        getAssignmentPartsFromCloud("PARTASSIGNMENTID", assignmentSelected, studentIDSelected);
+        getSectionInfoFromCloud("SECTIONASSIGNMENTID", assignmentSelected, studentIDSelected);
+
+        // TODO - when the save button is clicked what happens my friend
     }
 
     private void setUpTabLayoutFragments() {
@@ -122,86 +120,73 @@ public class MarkStudent extends AppCompatActivity {
 
     //endregion
 
-    void getAssignmentPartsFromCloud(String field, final int condition, final int studentID){
+    // This function must download Sections (IDs and names), Parts (IDs, names and marks)
+    void getSectionInfoFromCloud(final String field, final int condition, final int studentID) {
 
-        Log.d(TAG, "Getting assignment parts from cloud");
+        Log.d(TAG, "Getting Section Info from cloud");
 
-        mClient.getTable(MarkSchemePart.class).where().field(field).eq(condition).orderBy("PARTSECTIONID", QueryOrder.Ascending).orderBy("PARTPARTID", QueryOrder.Ascending)
-                        .execute(new TableQueryCallback<MarkSchemePart>() {
+        // This query must download
+        mClient.getTable(MarkSchemeSection.class)
+                .where().field(field).eq(condition)
+                .orderBy("SECTIONID", QueryOrder.Ascending)
+                .execute(new TableQueryCallback<MarkSchemeSection>() {
 
             @Override
-            public void onCompleted(java.util.List<MarkSchemePart> result, int count, Exception exception, ServiceFilterResponse response) {
-
+            public void onCompleted(java.util.List<MarkSchemeSection> resultSection, int count, Exception exception, ServiceFilterResponse response) {
 
                 if (exception == null) {
 
-                    List<String> partNames = new ArrayList<>();
-                    List<Integer> partMarks = new ArrayList<>();
-                    List<Integer> partNumbers = new ArrayList<>();
 
-                    for (MarkSchemePart part : result) {
-                        partNames.add(part.getPartName());
-                        partMarks.add(part.getPartAvailableMarks());
-                        partNumbers.add(part.getPartID());
+                    for (MarkSchemeSection sectionDownloaded : resultSection) {
+                        currentAssignment.setSectionIDSectionName(sectionDownloaded.getSectionID(), sectionDownloaded.getSectionName());
                     }
 
-                    Log.d(TAG, "Found " + partNames.size() + " assignment parts");
+                    getPartInfoFromCloud("PARTASSIGNMENTID", condition, studentID);
 
-                    currentAssignment.setPartNames(partNames);
-                    currentAssignment.setPartNumbers(partNumbers);
-                    currentAssignment.setPartMarks(partMarks);
-
-                    getAssignmentSectionsFromCloud("SECTIONASSIGNMENTID", condition, studentID);
-                }
-
-                else {
+                } else {
                     Log.d(TAG, "Exception found: " + exception.getMessage());
                 }
             }
         });
     }
 
-    void getAssignmentSectionsFromCloud(String field, int condition, final int studentID){
+    // This function must download Sections (IDs and names), Parts (IDs, names and marks)
+    void getPartInfoFromCloud(final String field, final int condition, final int studentID) {
 
-        Log.d(TAG, "Getting assignment parts from cloud");
+        Log.d(TAG, "Getting Part Info from cloud");
 
-        mClient.getTable(MarkSchemeSection.class).where().field(field).eq(condition)
-                .orderBy("SECTIONID", QueryOrder.Ascending).execute(new TableQueryCallback<MarkSchemeSection>() {
+        // This query must download
+        mClient.getTable(MarkSchemePart.class)
+                .where().field(field).eq(condition)
+                .orderBy("PARTASSIGNMENTID", QueryOrder.Ascending)
+                .execute(new TableQueryCallback<MarkSchemePart>() {
 
-            @Override
-            public void onCompleted(java.util.List<MarkSchemeSection> result, int count, Exception exception, ServiceFilterResponse response) {
+                    @Override
+                    public void onCompleted(java.util.List<MarkSchemePart> resultPart, int count, Exception exception, ServiceFilterResponse response) {
 
-                if (exception == null) {
+                        if (exception == null) {
 
-                    List<String> sectionNames = new ArrayList<>();
-                    List<Integer> sectionMarks = new ArrayList<>();
-                    List<Integer> sectionNumbers = new ArrayList<>();
+                            Log.d(TAG, "Transaction correct");
 
-                    for (MarkSchemeSection section : result) {
-                        sectionNames.add(section.getSectionName());
-                        sectionMarks.add(section.getSectionAvailableMarks());
-                        sectionNumbers.add(section.getSectionID());
+                            for (MarkSchemePart partDownloaded : resultPart) {
+                                // TODO - the issue is here
+                                currentAssignment.setPartIDPartName(partDownloaded.getPartID(), partDownloaded.getPartName());
+                                currentAssignment.setPartNamePartMark(partDownloaded.getPartName(), partDownloaded.getPartAvailableMarks());
+                                currentAssignment.setPartIDSectionID(partDownloaded.getPartID(), partDownloaded.getPartSectionID());
+                            }
+
+                            getStudentInfoFromCloud("STUDENTID", studentID);
+
+                        } else {
+                            Log.d(TAG, "Exception found: " + exception.getMessage());
+                        }
                     }
-
-                    Log.d(TAG, "Found " + sectionNames.size() + " assignment sections");
-
-                    currentAssignment.setSectionNames(sectionNames);
-                    currentAssignment.setSectionNumbers(sectionNumbers);
-                    currentAssignment.setSectionMarks(sectionMarks);
-
-                    getStudentInfoFromCloud("STUDENTID", studentID);
-                }
-
-                else {
-                    Log.d(TAG, "Exception found: " + exception.getMessage());
-                }
-            }
-        });
+                });
     }
 
-    void getStudentInfoFromCloud(String field, int condition){
+    void getStudentInfoFromCloud(String field, int condition) {
 
-        Log.d(TAG, "Getting assignment parts from cloud");
+        Log.d(TAG, "Getting student info from cloud");
 
         mClient.getTable(Student.class).where().field(field).eq(condition)
                 .orderBy("STUDENTID", QueryOrder.Ascending).execute(new TableQueryCallback<Student>() {
@@ -212,14 +197,16 @@ public class MarkStudent extends AppCompatActivity {
                 if (exception == null) {
 
                     for (Student student : result) {
+                        // Set up all of the student information in the local assignment
                         currentAssignment.setStudentFirstName(student.getStudentFirstName());
-                        currentAssignment.setStudentFirstName(student.getStudentFirstName());
+                        currentAssignment.setStudentLastName(student.getStudentLastName());
+                        currentAssignment.setStudentID(student.getStudentID());
+                        currentAssignment.setStudentMarks(0);
                     }
 
                     setUpTabLayoutFragments();
-                }
 
-                else {
+                } else {
                     Log.d(TAG, "Exception found: " + exception.getMessage());
                 }
             }

@@ -8,35 +8,49 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tarambana.markit.DataContainers.localAssignment;
+import com.tarambana.markit.DataContainers.localSection;
 import com.tarambana.markit.R;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MarkStudentFragment extends Fragment {
 
-    public static localAssignment currentAssignment;
-    public static int fragmentPosition;
+    public localSection currentSection = new localSection();
 
     public MarkStudentFragment() {
         // Required empty public constructor
     }
 
-    public static MarkStudentFragment newInstance(localAssignment inputAssignment, int position) {
+    public static MarkStudentFragment newInstance(Bundle bundleReceived) {
         MarkStudentFragment fragment = new MarkStudentFragment();
-        currentAssignment = inputAssignment;
-        fragmentPosition = position;
+        fragment.setArguments(bundleReceived);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            currentSection.setAssignmentID(getArguments().getInt("assignmentID"));
+            currentSection.setSectionID(getArguments().getInt("sectionID"));
+            currentSection.setSectionName(getArguments().getString("sectionName"));
+
+            for (int i = 0; i < getArguments().size() - 3; i++){
+                currentSection.setPartIDPartName(getArguments().getInt("partID" + i), getArguments().getString("partName" + i));
+                currentSection.setPartNamePartMark(getArguments().getString("partName" + i), getArguments().getInt("partMarks" + i));
+            }
+
+        }
     }
 
     @Override
@@ -51,50 +65,79 @@ public class MarkStudentFragment extends Fragment {
         super.onStart();
 
         TextView sectionTitle = (TextView) getView().findViewById(R.id.sectionTitleTV);
-        CheckBox markCB1 = (CheckBox) getView().findViewById(R.id.markCB1);
-        CheckBox markCB2 = (CheckBox) getView().findViewById(R.id.markCB2);
-        CheckBox markCB3 = (CheckBox) getView().findViewById(R.id.markCB3);
-        CheckBox markCB4 = (CheckBox) getView().findViewById(R.id.markCB4);
-        CheckBox markCB5 = (CheckBox) getView().findViewById(R.id.markCB5);
 
-        // TODO - will have to set up the checkboxes and title here
-        sectionTitle.setText(currentAssignment.sectionNames.get(fragmentPosition));
+        List<CheckBox> checkBoxesToActivate = new ArrayList<>();
+        checkBoxesToActivate.add((CheckBox)getView().findViewById(R.id.markCB1));
+        checkBoxesToActivate.add((CheckBox)getView().findViewById(R.id.markCB2));
+        checkBoxesToActivate.add((CheckBox)getView().findViewById(R.id.markCB3));
+        checkBoxesToActivate.add((CheckBox)getView().findViewById(R.id.markCB4));
+        checkBoxesToActivate.add((CheckBox)getView().findViewById(R.id.markCB5));
 
-        if (currentAssignment.partNames.size() > 4){
-            markCB1.setText(currentAssignment.partNames.get(0));
-            markCB1.setVisibility(View.VISIBLE);
-            markCB2.setText(currentAssignment.partNames.get(1));
-            markCB2.setVisibility(View.VISIBLE);
-            markCB3.setText(currentAssignment.partNames.get(2));
-            markCB3.setVisibility(View.VISIBLE);
-            markCB4.setText(currentAssignment.partNames.get(3));
-            markCB4.setVisibility(View.VISIBLE);
-            markCB5.setText(currentAssignment.partNames.get(4));
-            markCB5.setVisibility(View.VISIBLE);
-        } else if (currentAssignment.partNames.size() > 3) {
-            markCB1.setText(currentAssignment.partNames.get(0));
-            markCB1.setVisibility(View.VISIBLE);
-            markCB2.setText(currentAssignment.partNames.get(1));
-            markCB2.setVisibility(View.VISIBLE);
-            markCB3.setText(currentAssignment.partNames.get(2));
-            markCB3.setVisibility(View.VISIBLE);
-            markCB4.setText(currentAssignment.partNames.get(3));
-            markCB4.setVisibility(View.VISIBLE);
-        } else if (currentAssignment.partNames.size() > 2) {
-            markCB1.setText(currentAssignment.partNames.get(0));
-            markCB1.setVisibility(View.VISIBLE);
-            markCB2.setText(currentAssignment.partNames.get(1));
-            markCB2.setVisibility(View.VISIBLE);
-            markCB3.setText(currentAssignment.partNames.get(2));
-            markCB3.setVisibility(View.VISIBLE);
-        } else if (currentAssignment.partNames.size() > 1) {
-            markCB1.setText(currentAssignment.partNames.get(0));
-            markCB1.setVisibility(View.VISIBLE);
-            markCB2.setText(currentAssignment.partNames.get(1));
-            markCB2.setVisibility(View.VISIBLE);
-        } else if (currentAssignment.partNames.size() > 0) {
-            markCB1.setText(currentAssignment.partNames.get(0));
-            markCB1.setVisibility(View.VISIBLE);
+        SetUpCheckBoxReactions();
+
+        sectionTitle.setText(currentSection.getSectionName());
+
+        int i = 0;
+        for (Map.Entry<String, Integer> entry : currentSection.partNamePartMark.entrySet()) {
+            if (entry.getKey() == null){
+
+            } else{
+            checkBoxesToActivate.get(i).setText(entry.getKey());
+            checkBoxesToActivate.get(i).setVisibility(View.VISIBLE);
+            i++;
+            }
         }
     }
+
+    void SetUpCheckBoxReactions(){
+        CheckBox checkBox1 = (CheckBox) getView().findViewById(R.id.markCB1);
+        CheckBox checkBox2 = (CheckBox) getView().findViewById(R.id.markCB2);
+        CheckBox checkBox3 = (CheckBox) getView().findViewById(R.id.markCB3);
+        CheckBox checkBox4 = (CheckBox) getView().findViewById(R.id.markCB4);
+        CheckBox checkBox5 = (CheckBox) getView().findViewById(R.id.markCB5);
+
+        checkBox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    // Display toast that says marks added
+                    // Save those marks to some sort of counter
+                    Toast.makeText(getContext(), "yup", Toast.LENGTH_SHORT).show();
+                }
+
+                else {
+                    // take away from the marks?
+                }
+            }
+        });
+
+        checkBox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // find your way back into putting marks into currentAssignment
+            }
+        });
+
+        checkBox3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // find your way back into putting marks into currentAssignment
+            }
+        });
+
+        checkBox4.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // find your way back into putting marks into currentAssignment
+            }
+        });
+
+        checkBox5.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // find your way back into putting marks into currentAssignment
+            }
+        });
+    }
 }
+ 

@@ -19,6 +19,12 @@
     <string name="title_activity_mark_student">Mark Student</string>
     <string name="section_format">Tasa sent this from the start page</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="Save_Button_Text">Save</string>
+    <string name="Total_Marks_Text">Total Marks: </string>
+    <string name="ID_Tag_Text">ID: </string>
+    <string name="Student_ID_Hint">Student ID here</string>
+
+    <string name="Mark_Student_Button">Mark Student</string>
+
+    <string name="Comments_Hint">Comments here</string>
 </resources>

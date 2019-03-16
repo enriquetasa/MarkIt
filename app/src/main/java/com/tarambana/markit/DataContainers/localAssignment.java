@@ -1,21 +1,20 @@
 package com.tarambana.markit.DataContainers;
 
-import java.util.List;
+import java.util.HashMap;
 
 public class localAssignment {
 
-    public String assignmentName;
     public int assignmentNumber;
-    public int assignmentMarks;
 
-    public List<String> sectionNames;
-    public List<Integer> sectionNumbers;
-    public List<Integer> sectionMarks;
+    // Section
+    public HashMap<Integer, String> sectionIDSectionName = new HashMap<>();
 
-    public List<String> partNames;
-    public List<Integer> partNumbers;
-    public List<Integer> partMarks;
+    // Part
+    public HashMap<Integer, String> partIDPartName = new HashMap<>();
+    public HashMap<String, Integer> partNamePartMark = new HashMap<>();
+    public HashMap<Integer, Integer> partIDSectionID = new HashMap<>();
 
+    // Student
     public int studentID;
     public String studentFirstName;
     public String studentLastName;
@@ -23,14 +22,6 @@ public class localAssignment {
 
     public localAssignment(){
 
-    }
-
-    public String getAssignmentName() {
-        return assignmentName;
-    }
-
-    public void setAssignmentName(String assignmentName) {
-        this.assignmentName = assignmentName;
     }
 
     public int getAssignmentNumber() {
@@ -41,60 +32,36 @@ public class localAssignment {
         this.assignmentNumber = assignmentNumber;
     }
 
-    public int getAssignmentMarks() {
-        return assignmentMarks;
+    public HashMap<Integer, String> getSectionIDSectionName() {
+        return sectionIDSectionName;
     }
 
-    public void setAssignmentMarks(int assignmentMarks) {
-        this.assignmentMarks = assignmentMarks;
+    public void setSectionIDSectionName(Integer sectionID, String sectionName) {
+        this.sectionIDSectionName.put(sectionID, sectionName);
     }
 
-    public List<String> getSectionNames() {
-        return sectionNames;
+    public HashMap<Integer, String> getPartIDPartName() {
+        return partIDPartName;
     }
 
-    public void setSectionNames(List<String> sectionNames) {
-        this.sectionNames = sectionNames;
+    public void setPartIDPartName(Integer partID, String partName) {
+        this.partIDPartName.put(partID, partName);
     }
 
-    public List<Integer> getSectionNumbers() {
-        return sectionNumbers;
+    public HashMap<String, Integer> getPartNamePartMark() {
+        return partNamePartMark;
     }
 
-    public void setSectionNumbers(List<Integer> sectionNumbers) {
-        this.sectionNumbers = sectionNumbers;
+    public void setPartNamePartMark(String partName, Integer partMark) {
+        this.partNamePartMark.put(partName, partMark);
     }
 
-    public List<Integer> getSectionMarks() {
-        return sectionMarks;
+    public HashMap<Integer, Integer> getPartIDSectionID() {
+        return partIDSectionID;
     }
 
-    public void setSectionMarks(List<Integer> sectionMarks) {
-        this.sectionMarks = sectionMarks;
-    }
-
-    public List<String> getPartNames() {
-        return partNames;
-    }
-
-    public void setPartNames(List<String> partNames) {
-        this.partNames = partNames;
-    }
-
-    public List<Integer> getPartNumbers() {
-        return partNumbers;
-    }
-
-    public void setPartNumbers(List<Integer> partNumbers) {
-        this.partNumbers = partNumbers;
-    }
-
-    public List<Integer> getPartMarks() {
-        return partMarks;
-    }
-
-    public void setPartMarks(List<Integer> partMarks) {
-        this.partMarks = partMarks;
+    public void setPartIDSectionID(Integer partID, Integer sectionID) {
+        this.partIDSectionID.put(partID, sectionID);
     }
 
     public int getStudentID() {
@@ -105,12 +72,12 @@ public class localAssignment {
         this.studentID = studentID;
     }
 
-    public int getStudentMarks() {
-        return studentMarks;
+    public String getStudentFirstName() {
+        return studentFirstName;
     }
 
-    public void setStudentMarks(int studentMarks) {
-        this.studentMarks = studentMarks;
+    public void setStudentFirstName(String studentFirstName) {
+        this.studentFirstName = studentFirstName;
     }
 
     public String getStudentLastName() {
@@ -121,11 +88,11 @@ public class localAssignment {
         this.studentLastName = studentLastName;
     }
 
-    public String getStudentFirstName() {
-        return studentFirstName;
+    public int getStudentMarks() {
+        return studentMarks;
     }
 
-    public void setStudentFirstName(String studentFirstName) {
-        this.studentFirstName = studentFirstName;
+    public void setStudentMarks(int studentMarks) {
+        this.studentMarks = studentMarks;
     }
 }

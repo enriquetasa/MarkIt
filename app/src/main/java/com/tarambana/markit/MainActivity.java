@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-// TODO - this starter activity will effectively be the student select activity and therefore needs to have the logic and code in it
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -83,7 +81,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MarkStudent.class);
-                // TODO - Add the extra of the information for the student being marked to load the mark scheme
                 Bundle selectionInfo = new Bundle();
                 selectionInfo.putString("unit", unitSpinner.getSelectedItem().toString());
                 selectionInfo.putInt("assignment", (int)assignmentSpinner.getSelectedItem());
@@ -136,6 +133,19 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 firstTimeGroup = true;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        studentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Button markStudentButton = (Button) findViewById(R.id.MarkStudentBtn);
+                markStudentButton.setEnabled(true);
             }
 
             @Override
