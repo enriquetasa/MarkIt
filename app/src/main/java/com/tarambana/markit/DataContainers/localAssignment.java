@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class localAssignment {
 
-    public int assignmentNumber;
+    public int assignmentID;
 
     // Section
     public HashMap<Integer, String> sectionIDSectionName = new HashMap<>();
@@ -13,6 +13,7 @@ public class localAssignment {
     public HashMap<Integer, String> partIDPartName = new HashMap<>();
     public HashMap<String, Integer> partNamePartMark = new HashMap<>();
     public HashMap<Integer, Integer> partIDSectionID = new HashMap<>();
+    public HashMap<Integer, Boolean> partIDPartCorrect = new HashMap<>();
 
     // Student
     public int studentID;
@@ -25,11 +26,11 @@ public class localAssignment {
     }
 
     public int getAssignmentNumber() {
-        return assignmentNumber;
+        return assignmentID;
     }
 
     public void setAssignmentNumber(int assignmentNumber) {
-        this.assignmentNumber = assignmentNumber;
+        this.assignmentID = assignmentNumber;
     }
 
     public HashMap<Integer, String> getSectionIDSectionName() {
@@ -94,5 +95,13 @@ public class localAssignment {
 
     public void setStudentMarks(int studentMarks) {
         this.studentMarks = studentMarks;
+    }
+
+    public HashMap<Integer, Boolean> getPartIDPartCorrect() {
+        return partIDPartCorrect;
+    }
+
+    public void setPartIDPartCorrect(Integer partID, Boolean correct) {
+        this.partIDPartCorrect.put(partID, correct);
     }
 }

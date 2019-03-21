@@ -196,15 +196,11 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.student_selection) {
             item.setChecked(true);
-            // Start a new activity of type Mark Student and do selection in start and marking in a fragment
-            // Build intent, and then send it
         } else if (id == R.id.make_mark_scheme) {
             item.setChecked(true);
-            // Start a new activity for creating a mark scheme, this will very much be a future thing
         }
         else if (id == R.id.check_marks) {
-            item.setChecked(true);
-            // Start a new activity for checking student marks, this will very much be a future thing
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

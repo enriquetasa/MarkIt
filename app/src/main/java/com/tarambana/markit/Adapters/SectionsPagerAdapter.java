@@ -51,25 +51,22 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         switch (position) {
             case 0:
-                return (currentAssignment.assignmentNumber + ".1");
+                return (currentAssignment.assignmentID + ".1");
             case 1:
-                return (currentAssignment.assignmentNumber + ".2");
+                return (currentAssignment.assignmentID + ".2");
             case 2:
-                return (currentAssignment.assignmentNumber + ".3");
+                return (currentAssignment.assignmentID + ".3");
             case 3:
-                return (currentAssignment.assignmentNumber + ".4");
+                return (currentAssignment.assignmentID + ".4");
             case 4:
-                return (currentAssignment.assignmentNumber + ".5");
+                return (currentAssignment.assignmentID + ".5");
             default:
                 return null;
         }
     }
 
-
-    // TODO - CHECK this function is supposed to return a Section class according to sectionID for a fragment to implement
     Bundle SplitAssignmentIntoSection(localAssignment inputAssignment, int sectionID){
         Bundle bundleToReturn = new Bundle();
-        localSection sectionToReturn = new localSection();
 
         bundleToReturn.putInt("assignmentID", inputAssignment.getAssignmentNumber());
         bundleToReturn.putInt("sectionID", sectionID);

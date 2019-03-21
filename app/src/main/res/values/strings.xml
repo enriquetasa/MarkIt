@@ -27,4 +27,5 @@
     <string name="Mark_Student_Button">Mark Student</string>
 
     <string name="Comments_Hint">Comments here</string>
+    <string name="title_activity_grade_consultation">GradeConsultation</string>
 </resources>

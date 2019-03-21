@@ -8,6 +8,7 @@ public class localSection {
     public int sectionID;
     public String sectionName;
     public HashMap<Integer, String> partIDPartName = new HashMap<>();
+    public HashMap<Integer, Boolean> partIDPartCorrect = new HashMap<>();
     public HashMap<String, Integer> partNamePartMark = new HashMap<>();
 
     public localSection(){
@@ -52,5 +53,13 @@ public class localSection {
 
     public void setPartNamePartMark(String partName, Integer partMark) {
         this.partNamePartMark.put(partName, partMark);
+    }
+
+    public HashMap<Integer, Boolean> getPartIDPartCorrect() {
+        return partIDPartCorrect;
+    }
+
+    public void setPartIDPartCorrect(Integer partID, Boolean correct) {
+        this.partIDPartCorrect.put(partID, correct);
     }
 }
