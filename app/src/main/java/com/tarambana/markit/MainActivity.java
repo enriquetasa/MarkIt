@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity
                     // Great success in refreshing
                     // Do something if you wish, result contains your data
                     List<Integer> unitSpinnerList = new ArrayList<>();
-                    unitSpinnerList.add(3142);
+                    unitSpinnerList.add(000000000);
 
                     Log.d(TAG, "Dropdown content successfully retrieved from cloud");
 
@@ -307,7 +307,7 @@ public class MainActivity extends AppCompatActivity
                     // Great success in refreshing
                     // Do something if you wish, result contains your data
                     List<Integer> unitSpinnerList = new ArrayList<>();
-                    unitSpinnerList.add(3142);
+                    unitSpinnerList.add(000000000);
 
                     Log.d(TAG, "Dropdown content successfully retrieved from cloud");
 
@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity
                     // Great success in refreshing
                     // Do something if you wish, result contains your data
                     List<Integer> unitSpinnerList = new ArrayList<>();
-                    unitSpinnerList.add(3142);
+                    unitSpinnerList.add(000000000);
 
                     Log.d(TAG, "Dropdown content successfully retrieved from cloud");
 

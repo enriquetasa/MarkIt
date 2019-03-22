@@ -41,62 +41,62 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Spinner
-        android:id="@+id/GCSelectStudentSP"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_margin="16dp"
-        android:ellipsize="marquee"
-        android:textAlignment="inherit"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:textColor="@android:color/black"
-        app:layout_constraintStart_toStartOf="@+id/GCSelectStudentTV"
-        app:layout_constraintTop_toBottomOf="@+id/GCSelectStudentTV" />
+        <Spinner
+            android:id="@+id/GCSelectStudentSP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="16dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="60dp"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/GCSelectStudentTV"
+            app:layout_constraintTop_toBottomOf="@+id/GCSelectStudentTV" />
 
-    <TextView
-        android:id="@+id/GCSelectAssignmentTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="24dp"
-        android:text="@string/SelectAssignmentTV"
-        android:textColor="@android:color/black"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/GCSelectStudentSP"
-        app:layout_constraintTop_toBottomOf="@+id/GCSelectStudentSP" />
+        <TextView
+            android:id="@+id/GCSelectAssignmentTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="52dp"
+            android:text="@string/SelectAssignmentTV"
+            android:textColor="@android:color/black"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/GCSelectStudentSP"
+            app:layout_constraintTop_toBottomOf="@+id/GCSelectStudentSP" />
 
-    <Spinner
-        android:id="@+id/GCSelectAssignmentSp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_margin="16dp"
-        android:textColor="@android:color/black"
-        android:ellipsize="marquee"
-        android:textAlignment="inherit"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/GCSelectAssignmentTV"
-        app:layout_constraintTop_toBottomOf="@+id/GCSelectAssignmentTV" />
+        <Spinner
+            android:id="@+id/GCSelectAssignmentSp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="16dp"
+            android:layout_marginTop="28dp"
+            android:ellipsize="marquee"
+            android:textAlignment="inherit"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/GCSelectAssignmentTV"
+            app:layout_constraintTop_toBottomOf="@+id/GCSelectAssignmentTV" />
 
-    <Button
-        android:id="@+id/ConsultGradeBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="8dp"
-        android:enabled="false"
-        android:text="@string/Consult_Grade_Button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/GCSelectAssignmentSp" />
+        <Button
+            android:id="@+id/ConsultGradeBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="120dp"
+            android:layout_marginTop="88dp"
+            android:enabled="true"
+            android:text="@string/Consult_Grade_Button"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="@+id/GCSelectAssignmentSp"
+            app:layout_constraintTop_toBottomOf="@+id/GCSelectAssignmentSp" />
 
     <TextView
         android:layout_width="match_parent"
