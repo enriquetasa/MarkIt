@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity
         // this is the only one that will actually run at runtime, the others need to launch as listeners once a certain spinner is clicked
         refreshUnitDropDown("deleted","false");
 
+        // TODO - put these into a function
         unitSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -188,7 +189,6 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -200,7 +200,9 @@ public class MainActivity extends AppCompatActivity
             item.setChecked(true);
         }
         else if (id == R.id.check_marks) {
-
+            item.setChecked(true);
+            Intent myIntent = new Intent(this, GradeConsult.class);
+            this.startActivity(myIntent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

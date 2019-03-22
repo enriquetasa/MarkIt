@@ -2,8 +2,8 @@
     <string name="app_name">MarkIt</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">Enrique Tasa</string>
+    <string name="nav_header_subtitle">tasa@enriquetasa.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
@@ -25,6 +25,7 @@
     <string name="Student_ID_Hint">Student ID here</string>
 
     <string name="Mark_Student_Button">Mark Student</string>
+    <string name="Consult_Grade_Button">Consult Grade</string>
 
     <string name="Comments_Hint">Comments here</string>
     <string name="title_activity_grade_consultation">GradeConsultation</string>
