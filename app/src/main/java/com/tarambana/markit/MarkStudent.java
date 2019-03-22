@@ -94,6 +94,7 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
         currentAssignment.setAssignmentNumber(assignmentSelected);
 
         getSectionInfoFromCloud("SECTIONASSIGNMENTID", assignmentSelected, studentIDSelected);
+        UpdateTotalMarksTag(currentAssignment);
     }
 
     // region TODO - deal with navigation bar
@@ -309,6 +310,8 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
                     currentAssignment.partIDPartCorrect.put(entry.getKey(), entry.getValue());
             }
         }
+
+        UpdateTotalMarksTag(currentAssignment);
     }
     // endregion
 
@@ -366,6 +369,18 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
         assignmentToSave.studentMarks = 0;
 
         return true;
+    }
+
+    private void UpdateTotalMarksTag(localAssignment assignment){
+        int marksCounter = 0;
+        for (Map.Entry<String, Integer> entry : assignment.partNamePartMark.entrySet()){
+            if (assignment.partIDPartCorrect.get(getKeyForValueInHashMap(assignment.partIDPartName, entry.getKey()))){
+                marksCounter += assignment.partNamePartMark.get(entry.getKey());
+            }
+        }
+
+        TextView totalMarksCounter = (TextView) findViewById(R.id.TotalMarksTV);
+        totalMarksCounter.setText("Total Marks: " + marksCounter);
     }
 
     Integer getKeyForValueInHashMap(Map<Integer, String> inputHashMap, String value) {

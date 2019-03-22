@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity
 
     private MobileServiceClient mClient;
 
+    int failCount = 0;
+
     boolean firstTimeUnit = false;
     boolean firstTimeAssignment = false;
     boolean firstTimeGroup = false;
@@ -243,10 +245,14 @@ public class MainActivity extends AppCompatActivity
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     Spinner unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
                     unitSpinner.setAdapter(adapter);
+                    failCount = 0;
                 }
 
                 else {
                     Log.d(TAG, "Exception found: " + exception.getMessage());
+                    if (failCount < 3){
+                        refreshUnitDropDown("deleted","false");
+                    }
                 }
             }
         });
