@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (firstTimeGroup){
-                refreshStudentDropDown("LABGROUPNUMBER", groupSpinner.getSelectedItem().toString());
+                refreshStudentDropDown("LABGROUPNUMBER", "LABGROUPASSIGNMENTID", groupSpinner.getSelectedItem().toString(), assignmentSpinner.getSelectedItem().toString());
                 }
 
                 firstTimeGroup = true;
@@ -338,11 +338,11 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    void refreshStudentDropDown(String field, String condition){
+    void refreshStudentDropDown(String field1, String field2, String condition1, String condition2){
 
         Log.d(TAG, "Refreshing student dropdown");
         // This is how a basic query is executed, in this case all IDs
-        mClient.getTable(LabGroup.class).where().field(field).eq(condition)
+        mClient.getTable(LabGroup.class).where().field(field1).eq(condition1).and().field(field2).eq(condition2)
                 .orderBy("LABGROUPSTUDENTID", QueryOrder.Ascending).execute(new TableQueryCallback<LabGroup>() {
 
             // Listener that automatically gets set for the result of the transaction with Azure
