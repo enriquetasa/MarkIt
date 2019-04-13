@@ -21,8 +21,6 @@ import android.widget.TextView;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.TableQueryCallback;
-import com.microsoft.windowsazure.mobileservices.table.query.QueryOrder;
-import com.tarambana.markit.DataContainers.LabGroup;
 import com.tarambana.markit.DataContainers.StudentTotalMarks;
 
 import java.net.MalformedURLException;
@@ -35,9 +33,9 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
 
    final static String TAG = "TASA_LOG:";
 
-   private MobileServiceClient mClient;
+   private MobileServiceClient mClientAzureConnection;
 
-   boolean firstTimeStudent = false;
+   boolean firstTimeStudentDropdownRefreshed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +45,7 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
         try {
             Log.d(TAG, "Attempting to connect to Azure site");
 
-            mClient = new MobileServiceClient(
+            mClientAzureConnection = new MobileServiceClient(
                     "https://bookchoice.azurewebsites.net",
                     this
             );
@@ -70,7 +68,6 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(0).setChecked(true);
 
-
         final Spinner assignmentSpinner = (Spinner) findViewById(R.id.GCSelectAssignmentSp);
         final Spinner studentSpinner = (Spinner) findViewById(R.id.GCSelectStudentSP);
         final Button checkMarksBtn = (Button) findViewById(R.id.ConsultGradeBtn);
@@ -88,14 +85,14 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
         studentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (firstTimeStudent){
+                if (firstTimeStudentDropdownRefreshed){
                 String studentID = studentSpinner.getSelectedItem().toString();
                 refreshAssignmentDropDown("TOTALSTUDENTID", studentID);
-                firstTimeStudent = false;
+                firstTimeStudentDropdownRefreshed = false;
 
                 }
 
-                else firstTimeStudent = true;
+                else firstTimeStudentDropdownRefreshed = true;
             }
 
             @Override
@@ -113,7 +110,7 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
         Log.d(TAG, "Refreshing course unit dropdown");
         // This is how a basic query is executed, in this case all IDs
         try{
-        mClient.getTable(StudentTotalMarks.class).execute(new TableQueryCallback<StudentTotalMarks>() {
+        mClientAzureConnection.getTable(StudentTotalMarks.class).execute(new TableQueryCallback<StudentTotalMarks>() {
 
                     // Listener that automatically gets set for the result of the transaction with Azure
                     @Override
@@ -135,7 +132,7 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
                                     getBaseContext(), android.R.layout.simple_spinner_item, studentSpinnerList);
 
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            final Spinner studentSpinner = (Spinner) findViewById(R.id.GCSelectStudentSP);
+                            Spinner studentSpinner = (Spinner) findViewById(R.id.GCSelectStudentSP);
                             studentSpinner.setAdapter(adapter);
 
                         }
@@ -155,7 +152,7 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
 
         Log.d(TAG, "Refreshing assignment dropdown");
         // This is how a basic query is executed, in this case all IDs
-        mClient.getTable(StudentTotalMarks.class).where().field(field).eq(condition).execute(new TableQueryCallback<StudentTotalMarks>() {
+        mClientAzureConnection.getTable(StudentTotalMarks.class).where().field(field).eq(condition).execute(new TableQueryCallback<StudentTotalMarks>() {
 
             // Listener that automatically gets set for the result of the transaction with Azure
             @Override
@@ -163,19 +160,19 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
 
                 if (exception == null) {
 
-                    List<Integer> unitSpinnerList = new ArrayList<>();
-                    unitSpinnerList.add(000000000);
+                    List<Integer> assignmentSpinnerList = new ArrayList<>();
+                    assignmentSpinnerList.add(000000000);
 
                     Log.d(TAG, "Dropdown content successfully retrieved from cloud");
 
                     for (StudentTotalMarks unit : result) {
-                        if (!(unitSpinnerList.contains(unit.getStudentTotalMarksAssignmentID()))) {
-                            unitSpinnerList.add(unit.getStudentTotalMarksAssignmentID());
+                        if (!(assignmentSpinnerList.contains(unit.getStudentTotalMarksAssignmentID()))) {
+                            assignmentSpinnerList.add(unit.getStudentTotalMarksAssignmentID());
                         }
                     }
 
                     ArrayAdapter<Integer> adapter = new ArrayAdapter<>(
-                            getBaseContext(), android.R.layout.simple_spinner_item, unitSpinnerList);
+                            getBaseContext(), android.R.layout.simple_spinner_item, assignmentSpinnerList);
 
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     Spinner assignmentSpinner = (Spinner) findViewById(R.id.GCSelectAssignmentSp);
@@ -193,7 +190,7 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
 
         Log.d(TAG, "Refreshing assignment dropdown");
         // This is how a basic query is executed, in this case all IDs
-        mClient.getTable(StudentTotalMarks.class).where().field(field1).eq(condition).and().field(field2).eq(condition2).execute(new TableQueryCallback<StudentTotalMarks>() {
+        mClientAzureConnection.getTable(StudentTotalMarks.class).where().field(field1).eq(condition).and().field(field2).eq(condition2).execute(new TableQueryCallback<StudentTotalMarks>() {
 
             // Listener that automatically gets set for the result of the transaction with Azure
             @Override
@@ -211,10 +208,11 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
 
                         String text = "";
                         TextView gradeDisplayTV = (TextView) findViewById(R.id.StudentGradeInfo);
-                    for (String line : outputInfo){
+
+                        for (String line : outputInfo){
                         text = text + line + "\n";
                         gradeDisplayTV.setText(text);
-                    }
+                        }
                 }
 
                 else {
