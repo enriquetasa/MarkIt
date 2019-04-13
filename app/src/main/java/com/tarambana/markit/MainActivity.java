@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity
 
     static public String TAG = "TASA_LOG: ";
 
-    private MobileServiceClient mClient;
+    private MobileServiceClient mClientAzureConnection;
 
     int failCountAzureConnection = 0;
 
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity
         try {
             Log.d(TAG, "Attempting to connect to Azure site");
 
-            mClient = new MobileServiceClient(
+            mClientAzureConnection = new MobileServiceClient(
                     "https://bookchoice.azurewebsites.net",
                     this
             );
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity
 
         SetUpSpinners();
 
-        refreshUnitDropDown("deleted","false");
+        refreshUnitDropDownWithCloudData("deleted","false");
     }
 
     private void SetUpSpinners() {
@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (firstTimeUnitDropdownRefreshed){
-                refreshAssignmentDropDown("LABGROUPUNIT", unitSpinner.getSelectedItem().toString());
+                refreshAssignmentDropDownWithCloudData("LABGROUPUNIT", unitSpinner.getSelectedItem().toString());
                 }
                 firstTimeUnitDropdownRefreshed = true;
             }
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (firstTimeAssignmentDropdownRefreshed){
-                refreshGroupDropDown("LABGROUPASSIGNMENTID", assignmentSpinner.getSelectedItem().toString());
+                refreshGroupDropDownWithCloudData("LABGROUPASSIGNMENTID", assignmentSpinner.getSelectedItem().toString());
               }
               firstTimeAssignmentDropdownRefreshed = true;
             }
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (firstTimeGroupDropdownRefreshed){
-                refreshStudentDropDown("LABGROUPNUMBER", "LABGROUPASSIGNMENTID", groupSpinner.getSelectedItem().toString(), assignmentSpinner.getSelectedItem().toString());
+                refreshStudentDropDownWithCloudData("LABGROUPNUMBER", "LABGROUPASSIGNMENTID", groupSpinner.getSelectedItem().toString(), assignmentSpinner.getSelectedItem().toString());
                 }
 
                 firstTimeGroupDropdownRefreshed = true;
@@ -219,11 +219,11 @@ public class MainActivity extends AppCompatActivity
 
     // endregion
 
-    void refreshUnitDropDown(String field, String condition){
+    void refreshUnitDropDownWithCloudData(String field, String condition){
 
         Log.d(TAG, "Refreshing course unit dropdown");
 
-        mClient.getTable(LabGroup.class).where().field(field).eq(condition)
+        mClientAzureConnection.getTable(LabGroup.class).where().field(field).eq(condition)
                 .execute(new TableQueryCallback<LabGroup>() {
 
             // Listener that automatically gets set for the result of the transaction with Azure
@@ -255,18 +255,18 @@ public class MainActivity extends AppCompatActivity
                 else {
                     Log.d(TAG, "Exception found: " + exception.getMessage());
                     if (failCountAzureConnection < 3){
-                        refreshUnitDropDown("deleted","false");
+                        refreshUnitDropDownWithCloudData("deleted","false");
                     }
                 }
             }
         });
     }
 
-    void refreshAssignmentDropDown(String field, String condition){
+    void refreshAssignmentDropDownWithCloudData(String field, String condition){
 
         Log.d(TAG, "Refreshing assignment dropdown");
 
-        mClient.getTable(LabGroup.class).where().field(field).eq(condition)
+        mClientAzureConnection.getTable(LabGroup.class).where().field(field).eq(condition)
                 .orderBy("LABGROUPASSIGNMENTID", QueryOrder.Ascending).execute(new TableQueryCallback<LabGroup>() {
 
             // Listener that automatically gets set for the result of the transaction with Azure
@@ -301,11 +301,11 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    void refreshGroupDropDown(String field, String condition){
+    void refreshGroupDropDownWithCloudData(String field, String condition){
 
         Log.d(TAG, "Refreshing group dropdown");
 
-        mClient.getTable(LabGroup.class).where().field(field).eq(condition)
+        mClientAzureConnection.getTable(LabGroup.class).where().field(field).eq(condition)
                 .orderBy("LABGROUPNUMBER", QueryOrder.Ascending).execute(new TableQueryCallback<LabGroup>() {
 
             // Listener that automatically gets set for the result of the transaction with Azure
@@ -340,11 +340,11 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    void refreshStudentDropDown(String field1, String field2, String condition1, String condition2){
+    void refreshStudentDropDownWithCloudData(String field1, String field2, String condition1, String condition2){
 
         Log.d(TAG, "Refreshing student dropdown");
 
-        mClient.getTable(LabGroup.class).where().field(field1).eq(condition1).and().field(field2).eq(condition2)
+        mClientAzureConnection.getTable(LabGroup.class).where().field(field1).eq(condition1).and().field(field2).eq(condition2)
                 .orderBy("LABGROUPSTUDENTID", QueryOrder.Ascending).execute(new TableQueryCallback<LabGroup>() {
 
             // Listener that automatically gets set for the result of the transaction with Azure
