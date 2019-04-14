@@ -17,7 +17,6 @@
     <string name="CheckMarksMenuItem">Check Marks for Student</string>
 
     <string name="title_activity_mark_student">Mark Student</string>
-    <string name="section_format">Tasa sent this from the start page</string>
 
     <string name="Save_Button_Text">Save</string>
     <string name="Total_Marks_Text">Total Marks: </string>
@@ -28,5 +27,4 @@
     <string name="Consult_Grade_Button">Consult Grade</string>
 
     <string name="Comments_Hint">Comments here</string>
-    <string name="title_activity_grade_consultation">GradeConsultation</string>
 </resources>
