@@ -29,47 +29,15 @@ public class LabGroup {
         return labGroupStudentID;
     }
 
-    public void setLabGroupStudentID(int labGroupStudentID) {
-        this.labGroupStudentID = labGroupStudentID;
-    }
-
     public int getLabGroupNumber() {
         return labGroupNumber;
-    }
-
-    public void setLabGroupNumber(int labGroupNumber) {
-        this.labGroupNumber = labGroupNumber;
-    }
-
-    public String getLabGroupLocation() {
-        return labGroupLocation;
-    }
-
-    public void setLabGroupLocation(String labGroupLocation) {
-        this.labGroupLocation = labGroupLocation;
     }
 
     public int getLabGroupAssignmentID() {
         return labGroupAssignmentID;
     }
 
-    public void setLabGroupAssignmentID(int labGroupAssignmentID) {
-        this.labGroupAssignmentID = labGroupAssignmentID;
-    }
-
     public String getLabGroupUnit() {
         return labGroupUnit;
-    }
-
-    public void setLabGroupUnit(String labGroupUnit) {
-        this.labGroupUnit = labGroupUnit;
-    }
-
-    public Date getLabGroupDate() {
-        return labGroupDate;
-    }
-
-    public void setLabGroupDate(Date labGroupDate) {
-        this.labGroupDate = labGroupDate;
     }
 }

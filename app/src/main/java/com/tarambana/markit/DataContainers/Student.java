@@ -18,23 +18,12 @@ public class Student {
         return studentLastName;
     }
 
-    public void setStudentLastName(String studentLastName) {
-        this.studentLastName = studentLastName;
-    }
-
     public String getStudentFirstName() {
         return studentFirstName;
-    }
-
-    public void setStudentFirstName(String studentFirstName) {
-        this.studentFirstName = studentFirstName;
     }
 
     public int getStudentID() {
         return studentID;
     }
 
-    public void setStudentID(int studentID) {
-        this.studentID = studentID;
-    }
 }

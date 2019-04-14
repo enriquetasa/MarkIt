@@ -57,32 +57,16 @@ public class localAssignment {
         this.partNamePartMark.put(partName, partMark);
     }
 
-    public HashMap<Integer, Integer> getPartIDSectionID() {
-        return partIDSectionID;
-    }
-
     public void setPartIDSectionID(Integer partID, Integer sectionID) {
         this.partIDSectionID.put(partID, sectionID);
-    }
-
-    public int getStudentID() {
-        return studentID;
     }
 
     public void setStudentID(int studentID) {
         this.studentID = studentID;
     }
 
-    public String getStudentFirstName() {
-        return studentFirstName;
-    }
-
     public void setStudentFirstName(String studentFirstName) {
         this.studentFirstName = studentFirstName;
-    }
-
-    public String getStudentLastName() {
-        return studentLastName;
     }
 
     public void setStudentLastName(String studentLastName) {
@@ -95,10 +79,6 @@ public class localAssignment {
 
     public void setStudentMarks(int studentMarks) {
         this.studentMarks = studentMarks;
-    }
-
-    public HashMap<Integer, Boolean> getPartIDPartCorrect() {
-        return partIDPartCorrect;
     }
 
     public void setPartIDPartCorrect(Integer partID, Boolean correct) {
