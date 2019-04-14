@@ -1,8 +1,6 @@
 package com.tarambana.markit.Fragments;
 
-import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -12,13 +10,9 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.tarambana.markit.DataContainers.localAssignment;
 import com.tarambana.markit.DataContainers.localSection;
 import com.tarambana.markit.R;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,11 +21,11 @@ import java.util.Map;
 
 public class MarkStudentFragment extends Fragment {
 
-    public localSection currentSection = new localSection();
+    public localSection currentActiveSection = new localSection();
 
     final static String TAG = "TASA_LOG:";
 
-    private MarksToActivityPasser dataPasser;
+    private MarksToActivityPasser dataPasserToActivity;
 
     public interface MarksToActivityPasser {
         public void sendDataToActivity(HashMap<Integer, Boolean> partIDPartCorrect);
@@ -56,15 +50,15 @@ public class MarkStudentFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            currentSection.setAssignmentID(getArguments().getInt("assignmentID"));
-            currentSection.setSectionID(getArguments().getInt("sectionID"));
-            currentSection.setSectionName(getArguments().getString("sectionName"));
+            currentActiveSection.setAssignmentID(getArguments().getInt("assignmentID"));
+            currentActiveSection.setSectionID(getArguments().getInt("sectionID"));
+            currentActiveSection.setSectionName(getArguments().getString("sectionName"));
 
             for (int i = 0; i < getArguments().size() - 4; i++){
                 if (getArguments().getInt("partID" + i) != 0){
-                currentSection.setPartIDPartName(getArguments().getInt("partID" + i), getArguments().getString("partName" + i));
-                currentSection.setPartNamePartMark(getArguments().getString("partName" + i), getArguments().getInt("partMarks" + i));
-                currentSection.setPartIDPartCorrect(getArguments().getInt("partID" + i), false);
+                currentActiveSection.setPartIDPartName(getArguments().getInt("partID" + i), getArguments().getString("partName" + i));
+                currentActiveSection.setPartNamePartMark(getArguments().getString("partName" + i), getArguments().getInt("partMarks" + i));
+                currentActiveSection.setPartIDPartCorrect(getArguments().getInt("partID" + i), false);
                 }
             }
         }
@@ -74,7 +68,7 @@ public class MarkStudentFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof MarksToActivityPasser){
-        dataPasser = (MarksToActivityPasser) context;
+        dataPasserToActivity = (MarksToActivityPasser) context;
         Log.d(TAG, "data passer instantiated");
         }
     }
@@ -102,10 +96,10 @@ public class MarkStudentFragment extends Fragment {
 
         SetUpCheckBoxReactions();
 
-        sectionTitle.setText(currentSection.getSectionName());
+        sectionTitle.setText(currentActiveSection.getSectionName());
 
         int i = 0;
-        for (Map.Entry<String, Integer> entry : currentSection.partNamePartMark.entrySet()) {
+        for (Map.Entry<String, Integer> entry : currentActiveSection.partNamePartMark.entrySet()) {
             if (entry.getKey() == null){
 
             } else{
@@ -130,15 +124,13 @@ public class MarkStudentFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
-                    // Display toast that says marks added
-                    // Save those marks to some sort of counter
-                    currentSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentSection.partIDPartName, checkBox1.getText().toString()), true);
-                    dataPasser.sendDataToActivity(currentSection.partIDPartCorrect);
+                    currentActiveSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentActiveSection.partIDPartName, checkBox1.getText().toString()), true);
+                    dataPasserToActivity.sendDataToActivity(currentActiveSection.partIDPartCorrect);
                 }
 
                 else {
-                    currentSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentSection.partIDPartName, checkBox1.getText().toString()), false);
-                    dataPasser.sendDataToActivity(currentSection.partIDPartCorrect);
+                    currentActiveSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentActiveSection.partIDPartName, checkBox1.getText().toString()), false);
+                    dataPasserToActivity.sendDataToActivity(currentActiveSection.partIDPartCorrect);
 
                 }
             }
@@ -149,15 +141,13 @@ public class MarkStudentFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if (isChecked){
-                    // Display toast that says marks added
-                    // Save those marks to some sort of counter
-                    currentSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentSection.partIDPartName, checkBox2.getText().toString()), true);
-                    dataPasser.sendDataToActivity(currentSection.partIDPartCorrect);
+                    currentActiveSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentActiveSection.partIDPartName, checkBox2.getText().toString()), true);
+                    dataPasserToActivity.sendDataToActivity(currentActiveSection.partIDPartCorrect);
                 }
 
                 else {
-                    currentSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentSection.partIDPartName, checkBox2.getText().toString()), false);
-                    dataPasser.sendDataToActivity(currentSection.partIDPartCorrect);
+                    currentActiveSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentActiveSection.partIDPartName, checkBox2.getText().toString()), false);
+                    dataPasserToActivity.sendDataToActivity(currentActiveSection.partIDPartCorrect);
                 }
             }
         });
@@ -166,15 +156,13 @@ public class MarkStudentFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
-                    // Display toast that says marks added
-                    // Save those marks to some sort of counter
-                    currentSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentSection.partIDPartName, checkBox3.getText().toString()), true);
-                    dataPasser.sendDataToActivity(currentSection.partIDPartCorrect);
+                    currentActiveSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentActiveSection.partIDPartName, checkBox3.getText().toString()), true);
+                    dataPasserToActivity.sendDataToActivity(currentActiveSection.partIDPartCorrect);
                 }
 
                 else {
-                    currentSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentSection.partIDPartName, checkBox3.getText().toString()), false);
-                    dataPasser.sendDataToActivity(currentSection.partIDPartCorrect);
+                    currentActiveSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentActiveSection.partIDPartName, checkBox3.getText().toString()), false);
+                    dataPasserToActivity.sendDataToActivity(currentActiveSection.partIDPartCorrect);
                 }
             }
         });
@@ -183,15 +171,13 @@ public class MarkStudentFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
-                    // Display toast that says marks added
-                    // Save those marks to some sort of counter
-                    currentSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentSection.partIDPartName, checkBox4.getText().toString()), true);
-                    dataPasser.sendDataToActivity(currentSection.partIDPartCorrect);
+                    currentActiveSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentActiveSection.partIDPartName, checkBox4.getText().toString()), true);
+                    dataPasserToActivity.sendDataToActivity(currentActiveSection.partIDPartCorrect);
                 }
 
                 else {
-                    currentSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentSection.partIDPartName, checkBox4.getText().toString()), false);
-                    dataPasser.sendDataToActivity(currentSection.partIDPartCorrect);
+                    currentActiveSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentActiveSection.partIDPartName, checkBox4.getText().toString()), false);
+                    dataPasserToActivity.sendDataToActivity(currentActiveSection.partIDPartCorrect);
                 }
             }
         });
@@ -200,15 +186,13 @@ public class MarkStudentFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
-                    // Display toast that says marks added
-                    // Save those marks to some sort of counter
-                    currentSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentSection.partIDPartName, checkBox5.getText().toString()), true);
-                    dataPasser.sendDataToActivity(currentSection.partIDPartCorrect);
+                    currentActiveSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentActiveSection.partIDPartName, checkBox5.getText().toString()), true);
+                    dataPasserToActivity.sendDataToActivity(currentActiveSection.partIDPartCorrect);
                 }
 
                 else {
-                    currentSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentSection.partIDPartName, checkBox5.getText().toString()), false);
-                    dataPasser.sendDataToActivity(currentSection.partIDPartCorrect);
+                    currentActiveSection.setPartIDPartCorrect(getKeyForValueInHashMap(currentActiveSection.partIDPartName, checkBox5.getText().toString()), false);
+                    dataPasserToActivity.sendDataToActivity(currentActiveSection.partIDPartCorrect);
                 }
             }
         });
