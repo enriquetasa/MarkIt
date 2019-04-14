@@ -40,11 +40,11 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
 
     static String TAG = "TASA_LOG:";
 
-    int counter = 0;
+    int failCountAzureConnection = 0;
 
-    private MobileServiceClient mClient;
+    private MobileServiceClient mClientAzureConnection;
 
-    public localAssignment currentAssignment = new localAssignment();
+    public localAssignment currentActiveAssignment = new localAssignment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +55,7 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
         try {
             Log.d(TAG, "Attempting to connect to Azure site");
 
-            mClient = new MobileServiceClient(
+            mClientAzureConnection = new MobileServiceClient(
                     "https://bookchoice.azurewebsites.net",
                     this
             );
@@ -78,11 +78,11 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(0).setChecked(true);
 
-        Bundle receivedInfo = getIntent().getExtras();
-        String unitSelected = receivedInfo.getString("unit");
-        int assignmentSelected = receivedInfo.getInt("assignment");
-        int groupSelected = receivedInfo.getInt("group");
-        int studentIDSelected = receivedInfo.getInt("studentID");
+        Bundle receivedInfoFromMainActivity = getIntent().getExtras();
+        String unitSelected = receivedInfoFromMainActivity.getString("unit");
+        int assignmentSelected = receivedInfoFromMainActivity.getInt("assignment");
+        int groupSelected = receivedInfoFromMainActivity.getInt("group");
+        int studentIDSelected = receivedInfoFromMainActivity.getInt("studentID");
         Log.d(TAG, "Bundle retrieved correctly in 2nd activity");
 
         toolbarNavBar.setTitle(unitSelected + " | Assignment " + assignmentSelected + " | Group " + groupSelected);
@@ -90,11 +90,11 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
         TextView studentIDTV = (TextView) findViewById(R.id.StudentIDTV);
         studentIDTV.setText("ID: " + studentIDSelected);
 
-        currentAssignment.setStudentID(studentIDSelected);
-        currentAssignment.setAssignmentNumber(assignmentSelected);
+        currentActiveAssignment.setStudentID(studentIDSelected);
+        currentActiveAssignment.setAssignmentNumber(assignmentSelected);
 
         getSectionInfoFromCloud("SECTIONASSIGNMENTID", assignmentSelected, studentIDSelected);
-        UpdateTotalMarksTag(currentAssignment);
+        UpdateTotalMarksTag(currentActiveAssignment);
     }
 
     // region TODO - deal with navigation bar
@@ -152,13 +152,15 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
         return true;
     }
 
+    // endregion
+
     // region CLOUD FUNCTIONS
     void getSectionInfoFromCloud(final String field, final int condition, final int studentID) {
 
         Log.d(TAG, "Getting Section Info from cloud");
 
         // This query must download
-        mClient.getTable(MarkSchemeSection.class)
+        mClientAzureConnection.getTable(MarkSchemeSection.class)
                 .where().field(field).eq(condition)
                 .orderBy("SECTIONID", QueryOrder.Ascending)
                 .execute(new TableQueryCallback<MarkSchemeSection>() {
@@ -170,15 +172,15 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
 
 
                     for (MarkSchemeSection sectionDownloaded : resultSection) {
-                        currentAssignment.setSectionIDSectionName(sectionDownloaded.getSectionID(), sectionDownloaded.getSectionName());
+                        currentActiveAssignment.setSectionIDSectionName(sectionDownloaded.getSectionID(), sectionDownloaded.getSectionName());
                     }
 
                     getPartInfoFromCloud("PARTASSIGNMENTID", condition, studentID);
 
-                } else if (counter < 3) {
+                } else if (failCountAzureConnection < 3) {
                     Log.d(TAG, "Exception found: " + exception.getMessage());
                     getSectionInfoFromCloud(field, condition, studentID);
-                    counter++;
+                    failCountAzureConnection++;
                 }
                 else {
                     Log.d(TAG, "4th time an exception has been found found: " + exception.getMessage());
@@ -192,7 +194,7 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
         Log.d(TAG, "Getting Part Info from cloud");
 
         // This query must download
-        mClient.getTable(MarkSchemePart.class)
+        mClientAzureConnection.getTable(MarkSchemePart.class)
                 .where().field(field).eq(condition)
                 .orderBy("PARTASSIGNMENTID", QueryOrder.Ascending)
                 .execute(new TableQueryCallback<MarkSchemePart>() {
@@ -205,10 +207,10 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
                             Log.d(TAG, "Transaction correct");
 
                             for (MarkSchemePart partDownloaded : resultPart) {
-                                currentAssignment.setPartIDPartName(partDownloaded.getPartID(), partDownloaded.getPartName());
-                                currentAssignment.setPartNamePartMark(partDownloaded.getPartName(), partDownloaded.getPartAvailableMarks());
-                                currentAssignment.setPartIDSectionID(partDownloaded.getPartID(), partDownloaded.getPartSectionID());
-                                currentAssignment.setPartIDPartCorrect(partDownloaded.getPartID(), false);
+                                currentActiveAssignment.setPartIDPartName(partDownloaded.getPartID(), partDownloaded.getPartName());
+                                currentActiveAssignment.setPartNamePartMark(partDownloaded.getPartName(), partDownloaded.getPartAvailableMarks());
+                                currentActiveAssignment.setPartIDSectionID(partDownloaded.getPartID(), partDownloaded.getPartSectionID());
+                                currentActiveAssignment.setPartIDPartCorrect(partDownloaded.getPartID(), false);
                             }
 
                             getStudentInfoFromCloud("STUDENTID", studentID);
@@ -224,20 +226,20 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
 
         Log.d(TAG, "Getting student info from cloud");
 
-        mClient.getTable(Student.class).where().field(field).eq(condition)
+        mClientAzureConnection.getTable(Student.class).where().field(field).eq(condition)
                 .orderBy("STUDENTID", QueryOrder.Ascending).execute(new TableQueryCallback<Student>() {
 
             @Override
-            public void onCompleted(java.util.List<Student> result, int count, Exception exception, ServiceFilterResponse response) {
+            public void onCompleted(java.util.List<Student> resultStudentInfo, int count, Exception exception, ServiceFilterResponse response) {
 
                 if (exception == null) {
 
-                    for (Student student : result) {
+                    for (Student student : resultStudentInfo) {
                         // Set up all of the student information in the local assignment
-                        currentAssignment.setStudentFirstName(student.getStudentFirstName());
-                        currentAssignment.setStudentLastName(student.getStudentLastName());
-                        currentAssignment.setStudentID(student.getStudentID());
-                        currentAssignment.setStudentMarks(0);
+                        currentActiveAssignment.setStudentFirstName(student.getStudentFirstName());
+                        currentActiveAssignment.setStudentLastName(student.getStudentLastName());
+                        currentActiveAssignment.setStudentID(student.getStudentID());
+                        currentActiveAssignment.setStudentMarks(0);
                     }
 
                     setUpTabLayoutFragments();
@@ -250,31 +252,6 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
         });
     }
 
-    void UpdateTableItem(localAssignment assignmentToSave){
-
-        StudentTotalMarks studentMarks = new StudentTotalMarks();
-        studentMarks.setStudentTotalMarksStudentID(assignmentToSave.studentID);
-        studentMarks.setStudentTotalMarksAssignmentID(assignmentToSave.assignmentID);
-        studentMarks.setStudentTotalMarksAchieved(assignmentToSave.getStudentMarks());
-
-        // Update the table, automatic listener set for end of transaction with Azure
-        mClient.getTable(StudentTotalMarks.class).update(studentMarks, new TableOperationCallback<StudentTotalMarks>() {
-            @Override
-            public void onCompleted(StudentTotalMarks entity, Exception exception, ServiceFilterResponse response) {
-
-                // Always check for exceptions/completion
-                if (exception == null){
-                    // Great success in altering the object
-                    // Do something if you wish
-                }
-
-                else {
-                    // there has been an exception handle it
-                }
-            }
-        });
-    } // This does not get used, as we're saving all the records now
-
     void addItemsToTable(localAssignment assignmentToSave){
 
         final StudentTotalMarks studentMarks = new StudentTotalMarks();
@@ -283,7 +260,7 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
         studentMarks.setStudentTotalMarksAchieved(assignmentToSave.getStudentMarks());
 
         // Insert statement, directly pass the container class
-        mClient.getTable(StudentTotalMarks.class).insert(studentMarks, new TableOperationCallback<StudentTotalMarks>() {
+        mClientAzureConnection.getTable(StudentTotalMarks.class).insert(studentMarks, new TableOperationCallback<StudentTotalMarks>() {
 
             @Override
             public void onCompleted(StudentTotalMarks entity, Exception exception, ServiceFilterResponse response) {
@@ -306,12 +283,12 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
     @Override
     public void sendDataToActivity(HashMap<Integer, Boolean> partIDPartCorrect){
         for (Map.Entry<Integer, Boolean> entry : partIDPartCorrect.entrySet()){
-            if (currentAssignment.partIDPartCorrect.containsKey(entry.getKey())){
-                    currentAssignment.partIDPartCorrect.put(entry.getKey(), entry.getValue());
+            if (currentActiveAssignment.partIDPartCorrect.containsKey(entry.getKey())){
+                    currentActiveAssignment.partIDPartCorrect.put(entry.getKey(), entry.getValue());
             }
         }
 
-        UpdateTotalMarksTag(currentAssignment);
+        UpdateTotalMarksTag(currentActiveAssignment);
     }
     // endregion
 
@@ -327,10 +304,9 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
 
         viewPager.setOffscreenPageLimit(5);
 
-        SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager(), currentAssignment);
+        SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager(), currentActiveAssignment);
         Log.d(TAG, "TabLayout Adapter built");
 
-        // PETA AQUI
         viewPager.setAdapter(adapter);
         Log.d(TAG, "Adapter set");
 
@@ -346,8 +322,7 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
 
             @Override
             public void onClick(View v) {
-                // this is where the report will be generated
-                if(saveStudentMarksInCloud(currentAssignment)){
+                if(saveStudentMarksInCloud(currentActiveAssignment)){
                     Toast.makeText(getBaseContext(), "Student marks updated on cloud", Toast.LENGTH_SHORT).show();
                 }
                 else {
@@ -399,5 +374,4 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
         }
         return keyToReturn;
     }
-
 }

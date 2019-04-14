@@ -203,7 +203,7 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
                     Log.d(TAG, "Dropdown content successfully retrieved from cloud");
 
                     for (StudentTotalMarks grade : result) {
-                        outputInfo.add("Student " + condition + " achieved " + grade.getStudentTotalMarksAchieved() + " in assignment " + condition2);
+                        outputInfo.add("Student " + condition + " achieved " + grade.getStudentTotalMarksAchieved() + " marks in assignment " + condition2);
                         }
 
                         String text = "";
