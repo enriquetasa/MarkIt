@@ -23,33 +23,32 @@ public class MarkStudentFragment extends Fragment {
 
     public localSection currentActiveSection = new localSection();
 
-    final static String TAG = "TASA_LOG:";
+    final static String TAG = "TASA_LOG ";
 
+    // Declaration and instantiation of the interface
     private MarksToActivityPasser dataPasserToActivity;
 
     public interface MarksToActivityPasser {
         public void sendDataToActivity(HashMap<Integer, Boolean> partIDPartCorrect);
     }
 
-    //region CONSTRUCTORS
     public MarkStudentFragment() {
         // Required empty public constructor
     }
 
     public static MarkStudentFragment newInstance(Bundle bundleReceived) {
         MarkStudentFragment fragment = new MarkStudentFragment();
+        // Retrieve the bundle sent in a format compatible with the fragment concept: as arguments
         fragment.setArguments(bundleReceived);
         return fragment;
     }
 
-    //endregion
-
-    // region FRAGMENT METHODS
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
+            Log.d(TAG, "MarkStudentFragment " + this.getId() + " : getting information from arguments");
             currentActiveSection.setAssignmentID(getArguments().getInt("assignmentID"));
             currentActiveSection.setSectionID(getArguments().getInt("sectionID"));
             currentActiveSection.setSectionName(getArguments().getString("sectionName"));
@@ -69,7 +68,7 @@ public class MarkStudentFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof MarksToActivityPasser){
         dataPasserToActivity = (MarksToActivityPasser) context;
-        Log.d(TAG, "data passer instantiated");
+            Log.d(TAG, "MarkStudentFragment " + this.getId() + " : data passer instantiated");
         }
     }
 
@@ -79,11 +78,12 @@ public class MarkStudentFragment extends Fragment {
         return rootView;
     }
 
+    // This method is called every time the fragment is instantiated in UI and sets up the UI section of its function: checkboxes are responsive, etc...
     @Override
     public void onStart() {
         super.onStart();
 
-        Log.d(TAG, "In Fragment");
+        Log.d(TAG, "MarkStudentFragment " + this.getFragmentManager().findFragmentById(R.id.markCB1) + " : fragment started");
 
         TextView sectionTitle = (TextView) getView().findViewById(R.id.sectionTitleTV);
 
@@ -110,8 +110,7 @@ public class MarkStudentFragment extends Fragment {
         }
     }
 
-    // endregion
-
+    // This method sets up all the checkboxes in the marking UI to respond to user clicks, etc...
     void SetUpCheckBoxReactions(){
 
         final CheckBox checkBox1 = (CheckBox) getView().findViewById(R.id.markCB1);
@@ -198,6 +197,7 @@ public class MarkStudentFragment extends Fragment {
         });
     }
 
+    // Utility method to get the key that corresponds to the input value in a given hashmap
     Integer getKeyForValueInHashMap(Map<Integer, String> inputHashMap, String value) {
 
         Integer keyToReturn = 0;

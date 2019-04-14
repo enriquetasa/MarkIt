@@ -31,11 +31,14 @@ import static android.view.View.VISIBLE;
 
 public class GradeConsult extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-   final static String TAG = "TASA_LOG:";
+   final static String TAG = "TASA_LOG ";
 
+    // Object declared to interact with Azure cloud
    private MobileServiceClient mClientAzureConnection;
 
    boolean firstTimeStudentDropdownRefreshed = false;
+
+   int failCountAzureConnection = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,18 +46,21 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_grade_consult);
 
         try {
-            Log.d(TAG, "Attempting to connect to Azure site");
+            Log.d(TAG, "GradeConsult: attempting to connect to Azure site");
 
             mClientAzureConnection = new MobileServiceClient(
                     "https://bookchoice.azurewebsites.net",
                     this
             );
 
+            Log.d(TAG, "GradeConsult: success in connecting to Azure");
+
         } catch (MalformedURLException e){
             Log.d(TAG, "Malformed URL in connection to Azure site");
             e.printStackTrace();
         }
 
+        // Set up toolbar, drawer and navigation bar for UI
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarGC);
         setSupportActionBar(toolbar);
 
@@ -105,10 +111,11 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
 
     }
 
+    // This method downloads a "Student" class with the information required from the Azure SQL database, and allows that class to be inspected and manipulated for use of the data it contains. The other methods below with similar names work the same but download different types of data, and thus different classes
     void refreshStudentDropDown(String field, String condition){
 
-        Log.d(TAG, "Refreshing course unit dropdown");
-        // This is how a basic query is executed, in this case all IDs
+        Log.d(TAG, "GradeConsult: downloading student data");
+
         try{
         mClientAzureConnection.getTable(StudentTotalMarks.class).execute(new TableQueryCallback<StudentTotalMarks>() {
 
@@ -120,7 +127,7 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
                             List<Integer> studentSpinnerList = new ArrayList<>();
                             studentSpinnerList.add(000000000);
 
-                            Log.d(TAG, "Dropdown content successfully retrieved from cloud");
+                            Log.d(TAG, "GradeConsult: student data download successful");
 
                             for (StudentTotalMarks student : result) {
                                 if (!(studentSpinnerList.contains(student.getStudentTotalMarksStudentID()))) {
@@ -135,10 +142,13 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
                             Spinner studentSpinner = (Spinner) findViewById(R.id.GCSelectStudentSP);
                             studentSpinner.setAdapter(adapter);
 
-                        }
-
-                        else {
-                            Log.d(TAG, "Exception found: " + exception.getMessage());
+                        } else if (failCountAzureConnection < 3) {
+                            Log.d(TAG, "GradeConsult: Exception found: " + exception.getMessage());
+                            Log.d(TAG, "GradeConsult: reattempting student data download");
+                            refreshStudentDropDown("TOTALSTUDENTID", "*");
+                            failCountAzureConnection++;
+                        } else {
+                            Log.d(TAG, "GradeConsult: exception found: " + exception.getMessage());
                         }
                     }
                 });
@@ -150,7 +160,7 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
 
     void refreshAssignmentDropDown(String field, String condition){
 
-        Log.d(TAG, "Refreshing assignment dropdown");
+        Log.d(TAG, "GradeConsult: downloading assignment data");
         // This is how a basic query is executed, in this case all IDs
         mClientAzureConnection.getTable(StudentTotalMarks.class).where().field(field).eq(condition).execute(new TableQueryCallback<StudentTotalMarks>() {
 
@@ -163,7 +173,7 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
                     List<Integer> assignmentSpinnerList = new ArrayList<>();
                     assignmentSpinnerList.add(000000000);
 
-                    Log.d(TAG, "Dropdown content successfully retrieved from cloud");
+                    Log.d(TAG, "GradeConsult: assignment data download successful");
 
                     for (StudentTotalMarks unit : result) {
                         if (!(assignmentSpinnerList.contains(unit.getStudentTotalMarksAssignmentID()))) {
@@ -180,7 +190,7 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
                 }
 
                 else {
-                    Log.d(TAG, "Exception found: " + exception.getMessage());
+                    Log.d(TAG, "GradeConsult: exception found: " + exception.getMessage());
                 }
             }
         });
@@ -188,7 +198,7 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
 
     void GetStudentGrade(String field1, String field2, final String condition, final String condition2){
 
-        Log.d(TAG, "Refreshing assignment dropdown");
+        Log.d(TAG, "GradeConsult: downloading grade data");
         // This is how a basic query is executed, in this case all IDs
         mClientAzureConnection.getTable(StudentTotalMarks.class).where().field(field1).eq(condition).and().field(field2).eq(condition2).execute(new TableQueryCallback<StudentTotalMarks>() {
 
@@ -200,7 +210,7 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
 
                     List<String> outputInfo = new ArrayList<>();
 
-                    Log.d(TAG, "Dropdown content successfully retrieved from cloud");
+                    Log.d(TAG, "GradeConsult: grade data download successful");
 
                     for (StudentTotalMarks grade : result) {
                         outputInfo.add("Student " + condition + " achieved " + grade.getStudentTotalMarksAchieved() + " marks in assignment " + condition2);
@@ -216,13 +226,13 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
                 }
 
                 else {
-                    Log.d(TAG, "Exception found: " + exception.getMessage());
+                    Log.d(TAG, "GradeConsult: exception found: " + exception.getMessage());
                 }
             }
         });
     }
 
-    // region TODO - deal with navigation bar
+    // System required method
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_grade_consult);
@@ -232,6 +242,7 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
         }
     }
+    // System required method
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -239,6 +250,7 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    // System required method
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -252,19 +264,23 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
+    // This method determines what happens when something is selected in the navigation drawer
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.student_selection) {
+            Log.d(TAG, "GradeConsult: student selection activity selected in navigation drawer");
             item.setChecked(true);
             Intent myIntent = new Intent(this, MainActivity.class);
             this.startActivity(myIntent);
         } else if (id == R.id.make_mark_scheme) {
+            Log.d(TAG, "GradeConsult: make mark scheme activity selected in navigation drawer");
             item.setChecked(true);
         }
         else if (id == R.id.check_marks) {
+            Log.d(TAG, "GradeConsult: grade consult activity selected in navigation drawer");
             item.setChecked(true);
         }
 
@@ -273,5 +289,4 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    //endregion
 }

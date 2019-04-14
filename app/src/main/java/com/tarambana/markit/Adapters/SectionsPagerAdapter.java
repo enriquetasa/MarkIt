@@ -22,6 +22,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         this.currentActiveAssignment = inputAssignment;
     }
 
+    // This method populates the tab layout
     @Override
     public Fragment getItem(int position) {
 
@@ -46,6 +47,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         return currentActiveAssignment.sectionIDSectionName.size();
     }
 
+    // This method returns the page title for each page of the tab layout
     @Override
     public CharSequence getPageTitle(int position) {
 
@@ -65,6 +67,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         }
     }
 
+    // This method takes an input assignment class and splits it into the various sections that are required fro each of the pages (fragments) in the tab layout
     Bundle SplitAssignmentIntoSection(localAssignment inputAssignment, int sectionID){
         Bundle bundleToReturn = new Bundle();
 
@@ -87,6 +90,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         return  bundleToReturn;
     }
 
+    // Utility method to get the key that corresponds to the input value in a given hashmap
     List<Integer> getAllKeysForValueInHashMap(Map<Integer, Integer> inputHashMap, int value)
     {
         List<Integer> keyToReturn = new ArrayList<>();

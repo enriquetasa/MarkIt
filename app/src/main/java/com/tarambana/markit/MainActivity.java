@@ -27,37 +27,38 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+    static public String TAG = "TASA_LOG ";
 
-    static public String TAG = "TASA_LOG: ";
-
+    // Object declared to interact with Azure cloud
     private MobileServiceClient mClientAzureConnection;
 
     int failCountAzureConnection = 0;
 
-    boolean firstTimeUnitDropdownRefreshed = false;
-    boolean firstTimeAssignmentDropdownRefreshed = false;
-    boolean firstTimeGroupDropdownRefreshed = false;
+    boolean firstTimeUnitDropdownRefreshed = true;
+    boolean firstTimeAssignmentDropdownRefreshed = true;
+    boolean firstTimeGroupDropdownRefreshed = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         try {
-            Log.d(TAG, "Attempting to connect to Azure site");
+            Log.d(TAG, "MainActivity: attempting to connect to Azure site");
 
             mClientAzureConnection = new MobileServiceClient(
                     "https://bookchoice.azurewebsites.net",
                     this
             );
+            Log.d(TAG, "MainActivity: success in connecting to Azure");
 
         } catch (MalformedURLException e){
-            Log.d(TAG, "Malformed URL in connection to Azure site");
+            Log.d(TAG, "MainActivity: malformed URL in connection to Azure site");
             e.printStackTrace();
         }
 
+        Log.d(TAG, "MarkStudent: bundle retrieved correctly in 2nd activity");
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -72,6 +73,9 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(0).setChecked(true);
 
+        Log.d(TAG, "MainActivity: toolbar, drawer and navigation view setup correctly");
+
+        // Define what happens when the button is clicked (open MarkStudent activity, sending it selected student and assignment data)
         Button MarkStudentBtn = (Button) findViewById(R.id.MarkStudentBtn);
         MarkStudentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +86,7 @@ public class MainActivity extends AppCompatActivity
                 Spinner groupSpinner = (Spinner) findViewById(R.id.SelectGroupSp);
                 Spinner studentSpinner = (Spinner) findViewById(R.id.SelectStudentSp);
 
+                // Intent built and keys added to it to specify the course, assignment, group and student ID selected for marking. This data will reach the newly started activity and will be used there.
                 Intent intent = new Intent(getApplicationContext(), MarkStudent.class);
                 Bundle selectionInfo = new Bundle();
                 selectionInfo.putString("unit", unitSpinner.getSelectedItem().toString());
@@ -89,7 +94,7 @@ public class MainActivity extends AppCompatActivity
                 selectionInfo.putInt("group", (int)groupSpinner.getSelectedItem());
                 selectionInfo.putInt("studentID", (int)studentSpinner.getSelectedItem());
                 intent.putExtras(selectionInfo);
-                Log.d(TAG, "Going to next activity");
+                Log.d(TAG, "MainActivity: going to MarkStudent activity with assignment " + (int)assignmentSpinner.getSelectedItem());
                 startActivity(intent);
             }
         });
@@ -99,20 +104,23 @@ public class MainActivity extends AppCompatActivity
         refreshUnitDropDownWithCloudData("deleted","false");
     }
 
+    // This method will set up the dropdown menus and refresh them sequentially when the user selects data from them
     private void SetUpSpinners() {
         final Spinner unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
         final Spinner assignmentSpinner = (Spinner) findViewById(R.id.SelectAssignmentSp);
         final Spinner groupSpinner = (Spinner) findViewById(R.id.SelectGroupSp);
         final Spinner studentSpinner = (Spinner) findViewById(R.id.SelectStudentSp);
 
-        // TODO - put these into a function
+        // When a value is selected in the spinner
         unitSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (firstTimeUnitDropdownRefreshed){
+                // If this is not the first time a value is selected, download the data (first time happens when UI is drawn, this is just a way of guaranteeing user input in populating these)
+                if (!firstTimeUnitDropdownRefreshed){
                 refreshAssignmentDropDownWithCloudData("LABGROUPUNIT", unitSpinner.getSelectedItem().toString());
                 }
-                firstTimeUnitDropdownRefreshed = true;
+
+                firstTimeUnitDropdownRefreshed = false;
             }
 
             @Override
@@ -124,10 +132,11 @@ public class MainActivity extends AppCompatActivity
         assignmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (firstTimeAssignmentDropdownRefreshed){
+                if (!firstTimeAssignmentDropdownRefreshed){
                 refreshGroupDropDownWithCloudData("LABGROUPASSIGNMENTID", assignmentSpinner.getSelectedItem().toString());
               }
-              firstTimeAssignmentDropdownRefreshed = true;
+
+              firstTimeAssignmentDropdownRefreshed = false;
             }
 
             @Override
@@ -139,11 +148,11 @@ public class MainActivity extends AppCompatActivity
         groupSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (firstTimeGroupDropdownRefreshed){
+                if (!firstTimeGroupDropdownRefreshed){
                 refreshStudentDropDownWithCloudData("LABGROUPNUMBER", "LABGROUPASSIGNMENTID", groupSpinner.getSelectedItem().toString(), assignmentSpinner.getSelectedItem().toString());
                 }
 
-                firstTimeGroupDropdownRefreshed = true;
+                firstTimeGroupDropdownRefreshed = false;
             }
 
             @Override
@@ -166,105 +175,56 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    // region TODO - deal with navigation bar
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        if (id == R.id.student_selection) {
-            item.setChecked(true);
-        } else if (id == R.id.make_mark_scheme) {
-            item.setChecked(true);
-        }
-        else if (id == R.id.check_marks) {
-            item.setChecked(true);
-            Intent myIntent = new Intent(this, GradeConsult.class);
-            this.startActivity(myIntent);
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    // endregion
-
+    // This method downloads a "LabGroup" class with the information required from the Azure SQL database, and allows that class to be inspected and manipulated for use of the data it contains. The other methods below with similar names work the same but download different types of data, and thus different classes
     void refreshUnitDropDownWithCloudData(String field, String condition){
 
-        Log.d(TAG, "Refreshing course unit dropdown");
+        Log.d(TAG, "MainActivity: populating course unit dropdown with cloud data");
 
+        // This line is Azure's adaptor's way of executing an SQL query: the LabGroup class downloaded contains the information where the passed field meets the passed condition
         mClientAzureConnection.getTable(LabGroup.class).where().field(field).eq(condition)
                 .execute(new TableQueryCallback<LabGroup>() {
 
-            // Listener that automatically gets set for the result of the transaction with Azure
-            @Override
-            public void onCompleted(java.util.List<LabGroup> result, int count, Exception exception, ServiceFilterResponse response) {
+                    // Listener for the result of the transaction with Azure
+                    @Override
+                    public void onCompleted(java.util.List<LabGroup> resultLabGroup, int count, Exception exception, ServiceFilterResponse response) {
 
-                if (exception == null) {
+                        // If there's no exception and all goes well, set up the spinner from the result of the transaction
+                        if (exception == null) {
 
-                    List<String> unitSpinnerList = new ArrayList<>();
-                    unitSpinnerList.add("Please select a unit");
+                            List<String> unitSpinnerList = new ArrayList<>();
+                            unitSpinnerList.add("Please select a unit");
 
-                    Log.d(TAG, "Dropdown content successfully retrieved from cloud");
+                            Log.d(TAG, "MainActivity: course unit spinner data successfully retrieved from Azure");
 
-                    for (LabGroup unit : result) {
-                        if (!(unitSpinnerList.contains(unit.getLabGroupUnit()))) {
-                            unitSpinnerList.add(unit.getLabGroupUnit());
+                            for (LabGroup unit : resultLabGroup) {
+                                if (!(unitSpinnerList.contains(unit.getLabGroupUnit()))) {
+                                    unitSpinnerList.add(unit.getLabGroupUnit());
+                                }
+                            }
+
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                                    getBaseContext(), android.R.layout.simple_spinner_item, unitSpinnerList);
+
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            Spinner unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
+                            unitSpinner.setAdapter(adapter);
+                            failCountAzureConnection = 0;
+                        }
+
+                        else {
+                            Log.d(TAG, "MainActivity: exception found: " + exception.getMessage());
+                            if (failCountAzureConnection < 3){
+                                Log.d(TAG, "MainActivity: reattempting course unit data download");
+                                refreshUnitDropDownWithCloudData("deleted","false");
+                            }
                         }
                     }
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                            getBaseContext(), android.R.layout.simple_spinner_item, unitSpinnerList);
-
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    Spinner unitSpinner = (Spinner) findViewById(R.id.SelectUnitSp);
-                    unitSpinner.setAdapter(adapter);
-                    failCountAzureConnection = 0;
-                }
-
-                else {
-                    Log.d(TAG, "Exception found: " + exception.getMessage());
-                    if (failCountAzureConnection < 3){
-                        refreshUnitDropDownWithCloudData("deleted","false");
-                    }
-                }
-            }
-        });
+                });
     }
 
     void refreshAssignmentDropDownWithCloudData(String field, String condition){
 
-        Log.d(TAG, "Refreshing assignment dropdown");
+        Log.d(TAG, "MainActivity: populating assignment dropdown with cloud data");
 
         mClientAzureConnection.getTable(LabGroup.class).where().field(field).eq(condition)
                 .orderBy("LABGROUPASSIGNMENTID", QueryOrder.Ascending).execute(new TableQueryCallback<LabGroup>() {
@@ -278,7 +238,7 @@ public class MainActivity extends AppCompatActivity
                     List<Integer> assignmentSpinnerList = new ArrayList<>();
                     assignmentSpinnerList.add(000000000);
 
-                    Log.d(TAG, "Dropdown content successfully retrieved from cloud");
+                    Log.d(TAG, "MainActivity: assignment spinner data successfully retrieved from Azure");
 
                     for (LabGroup unit : result) {
                         if (!(assignmentSpinnerList.contains(unit.getLabGroupAssignmentID()))) {
@@ -303,7 +263,7 @@ public class MainActivity extends AppCompatActivity
 
     void refreshGroupDropDownWithCloudData(String field, String condition){
 
-        Log.d(TAG, "Refreshing group dropdown");
+        Log.d(TAG, "MainActivity: populating lab group dropdown with cloud data");
 
         mClientAzureConnection.getTable(LabGroup.class).where().field(field).eq(condition)
                 .orderBy("LABGROUPNUMBER", QueryOrder.Ascending).execute(new TableQueryCallback<LabGroup>() {
@@ -317,7 +277,7 @@ public class MainActivity extends AppCompatActivity
                     List<Integer> groupSpinnerList = new ArrayList<>();
                     groupSpinnerList.add(000000000);
 
-                    Log.d(TAG, "Dropdown content successfully retrieved from cloud");
+                    Log.d(TAG, "MainActivity: lab group spinner data successfully retrieved from Azure");
 
                     for (LabGroup unit : result) {
                         if (!(groupSpinnerList.contains(unit.getLabGroupNumber()))) {
@@ -342,7 +302,7 @@ public class MainActivity extends AppCompatActivity
 
     void refreshStudentDropDownWithCloudData(String field1, String field2, String condition1, String condition2){
 
-        Log.d(TAG, "Refreshing student dropdown");
+        Log.d(TAG, "MainActivity: populating student dropdown with cloud data");
 
         mClientAzureConnection.getTable(LabGroup.class).where().field(field1).eq(condition1).and().field(field2).eq(condition2)
                 .orderBy("LABGROUPSTUDENTID", QueryOrder.Ascending).execute(new TableQueryCallback<LabGroup>() {
@@ -356,7 +316,7 @@ public class MainActivity extends AppCompatActivity
                     List<Integer> studentSpinnerList = new ArrayList<>();
                     studentSpinnerList.add(000000000);
 
-                    Log.d(TAG, "Dropdown content successfully retrieved from cloud");
+                    Log.d(TAG, "MainActivity: student spinner data successfully retrieved from Azure");
 
                     for (LabGroup unit : result) {
                         if (!(studentSpinnerList.contains(unit.getLabGroupStudentID()))) {
@@ -377,5 +337,62 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+    }
+
+    // System required method
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    // System required method
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    // System required method
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    // This method determines what happens when something is selected in the navigation drawer
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.student_selection) {
+            Log.d(TAG, "MainActivity: student selection activity selected in navigation drawer");
+            item.setChecked(true);
+        } else if (id == R.id.make_mark_scheme) {
+            Log.d(TAG, "MainActivity: make mark scheme activity selected in navigation drawer");
+            item.setChecked(true);
+        } else if (id == R.id.check_marks) {
+            Log.d(TAG, "MainActivity: grade consult activity selected in navigation drawer");
+            item.setChecked(true);
+            Intent myIntent = new Intent(this, GradeConsult.class);
+            this.startActivity(myIntent);
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }
