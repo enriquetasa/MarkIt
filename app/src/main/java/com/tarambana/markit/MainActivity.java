@@ -215,10 +215,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         else if (failCountAzureConnection < 3){
                             Log.d(TAG, "MainActivity: reattempting course unit data download");
                             refreshUnitDropDownWithCloudData("deleted","false");
+                            failCountAzureConnection++;
                         }
                         else {
                             Log.d(TAG, "MainActivity: exception found: " + exception.getMessage());
-                            Toast.makeText(getApplicationContext(), "Internet connection issue, reconnect and try again", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Internet connection issue, reconnect and try again", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
