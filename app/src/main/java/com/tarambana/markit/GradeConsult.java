@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
@@ -57,6 +58,7 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
 
         } catch (MalformedURLException e){
             Log.d(TAG, "Malformed URL in connection to Azure site");
+            Toast.makeText(getApplicationContext(), "Internet connection issue, reconnect and try again", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 
@@ -141,6 +143,7 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             Spinner studentSpinner = (Spinner) findViewById(R.id.GCSelectStudentSP);
                             studentSpinner.setAdapter(adapter);
+                            failCountAzureConnection = 0;
 
                         } else if (failCountAzureConnection < 3) {
                             Log.d(TAG, "GradeConsult: Exception found: " + exception.getMessage());
@@ -149,6 +152,8 @@ public class GradeConsult extends AppCompatActivity implements NavigationView.On
                             failCountAzureConnection++;
                         } else {
                             Log.d(TAG, "GradeConsult: exception found: " + exception.getMessage());
+                            Toast.makeText(getApplicationContext(), "Internet connection issue, reconnect and try again", Toast.LENGTH_SHORT).show();
+
                         }
                     }
                 });

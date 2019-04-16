@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } catch (MalformedURLException e){
             Log.d(TAG, "MainActivity: malformed URL in connection to Azure site");
+            Toast.makeText(getApplicationContext(), "Internet connection issue, reconnect and try again", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 
@@ -210,13 +212,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             unitSpinner.setAdapter(adapter);
                             failCountAzureConnection = 0;
                         }
-
+                        else if (failCountAzureConnection < 3){
+                            Log.d(TAG, "MainActivity: reattempting course unit data download");
+                            refreshUnitDropDownWithCloudData("deleted","false");
+                        }
                         else {
                             Log.d(TAG, "MainActivity: exception found: " + exception.getMessage());
-                            if (failCountAzureConnection < 3){
-                                Log.d(TAG, "MainActivity: reattempting course unit data download");
-                                refreshUnitDropDownWithCloudData("deleted","false");
-                            }
+                            Toast.makeText(getApplicationContext(), "Internet connection issue, reconnect and try again", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

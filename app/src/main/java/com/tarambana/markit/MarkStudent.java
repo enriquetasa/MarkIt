@@ -63,6 +63,7 @@ public class MarkStudent extends AppCompatActivity implements MarkStudentFragmen
 
         } catch (MalformedURLException e) {
             Log.d(TAG, "MarkStudent: malformed URL in connection to Azure site");
+            Toast.makeText(getApplicationContext(), "Internet connection issue, reconnect and try again", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 
