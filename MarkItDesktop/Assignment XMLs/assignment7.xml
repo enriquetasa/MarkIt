@@ -1,0 +1,60 @@
+<assignment>
+	<assignmentNumber>7</assignmentNumber>
+	<assignmentName>Micro III Report</assignmentName>
+	<assignmentAvailableMarks>10</assignmentAvailableMarks>
+	<assignmentAuthor>Amy</assignmentAuthor>
+	<LabGroupLocation>Barnes Wallis PC Cluster</LabGroupLocation>
+	<LabGroupUnit>Microcontroller Engineering III</LabGroupUnit>
+	<LabGroupNumber>1</LabGroupNumber>
+	<LabGroupStudentID>9644854</LabGroupStudentID>
+	<markScheme>
+		<section>
+			<sectionNumber>1</sectionNumber>
+			<sectionName>Attendance</sectionName>
+			<sectionAvailableMarks>1</sectionAvailableMarks>
+			<sectionAuthor>Amy</sectionAuthor>
+			<part>
+				<partNumber>40</partNumber>
+				<partName>Student Present</partName>
+				<partAvailableMarks>1</partAvailableMarks>
+				<partAuthor>Amy</partAuthor>
+			</part>
+		</section>
+		<section>
+			<sectionNumber>2</sectionNumber>
+			<sectionName>Dese nuts</sectionName>
+			<sectionAvailableMarks>4</sectionAvailableMarks>
+			<sectionAuthor>David</sectionAuthor>
+			<part>
+				<partNumber>41</partNumber>
+				<partName>Has anybody got a weapon?</partName>
+				<partAvailableMarks>1</partAvailableMarks>
+				<partAuthor>David</partAuthor>
+			</part>
+			<part>
+				<partNumber>42</partNumber>
+				<partName>You got all the nuts?</partName>
+				<partAvailableMarks>3</partAvailableMarks>
+				<partAuthor>Amy</partAuthor>
+			</part>
+		</section>		
+		<section>
+			<sectionNumber>3</sectionNumber>
+			<sectionName>Is the drincc connected</sectionName>
+			<sectionAvailableMarks>4</sectionAvailableMarks>
+			<sectionAuthor>David</sectionAuthor>
+			<part>
+				<partNumber>43</partNumber>
+				<partName>We forgot da drincc</partName>
+				<partAvailableMarks>2</partAvailableMarks>
+				<partAuthor>Tasa</partAuthor>
+			</part>
+			<part>
+				<partNumber>44</partNumber>
+				<partName>why are you gay</partName>
+				<partAvailableMarks>2</partAvailableMarks>
+				<partAuthor>Collaboration</partAuthor>
+			</part>
+		</section>
+	</markScheme>
+</assignment>

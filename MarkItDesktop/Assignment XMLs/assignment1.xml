@@ -1,0 +1,60 @@
+<assignment>
+	<assignmentNumber>1</assignmentNumber>
+	<assignmentName>Getting to grips with the PIC18</assignmentName>
+	<assignmentAvailableMarks>9</assignmentAvailableMarks>
+	<assignmentAuthor>Tasa</assignmentAuthor>
+	<LabGroupLocation>Barnes Wallis PC Cluster</LabGroupLocation>
+	<LabGroupUnit>Microcontroller Engineering II</LabGroupUnit>
+	<LabGroupNumber>1</LabGroupNumber>
+	<LabGroupStudentID>9673164</LabGroupStudentID>
+	<markScheme>
+		<section>
+			<sectionNumber>1</sectionNumber>
+			<sectionName>Attendance</sectionName>
+			<sectionAvailableMarks>1</sectionAvailableMarks>
+			<sectionAuthor>Tasa</sectionAuthor>
+			<part>
+				<partNumber>6</partNumber>
+				<partName>Student Present</partName>
+				<partAvailableMarks>1</partAvailableMarks>
+				<partAuthor>Tasa</partAuthor>
+			</part>
+		</section>
+		<section>
+			<sectionNumber>2</sectionNumber>
+			<sectionName>Basic Use of the PIC18</sectionName>
+			<sectionAvailableMarks>3</sectionAvailableMarks>
+			<sectionAuthor>Tasa</sectionAuthor>
+			<part>
+				<partNumber>7</partNumber>
+				<partName>Student can build a program on the IDE</partName>
+				<partAvailableMarks>1</partAvailableMarks>
+				<partAuthor>Tasa</partAuthor>
+			</part>
+			<part>
+				<partNumber>8</partNumber>
+				<partName>Student can run a program on the PIC18</partName>
+				<partAvailableMarks>2</partAvailableMarks>
+				<partAuthor>Tasa</partAuthor>
+			</part>
+		</section>		
+		<section>
+			<sectionNumber>3</sectionNumber>
+			<sectionName>Programming the PIC18</sectionName>
+			<sectionAvailableMarks>3</sectionAvailableMarks>
+			<sectionAuthor>Tasa</sectionAuthor>
+			<part>
+				<partNumber>9</partNumber>
+				<partName>Student can display a binary value on the LEDs</partName>
+				<partAvailableMarks>2</partAvailableMarks>
+				<partAuthor>Tasa</partAuthor>
+			</part>
+			<part>
+				<partNumber>10</partNumber>
+				<partName>Student can display a numerical value on the 7SEG</partName>
+				<partAvailableMarks>3</partAvailableMarks>
+				<partAuthor>Tasa</partAuthor>
+			</part>
+		</section>
+	</markScheme>
+</assignment>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".MainActivity"
+    tools:showIn="@layout/app_bar_main">
+
+    <TextView
+        android:id="@+id/SelectUnitTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/SelectUnitTV"
+        android:textColor="@android:color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/SelectUnitSp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="16dp"
+        android:ellipsize="marquee"
+        android:textAlignment="inherit"
+        android:textColor="@color/colorAccent"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/SelectUnitTV"
+        app:layout_constraintTop_toBottomOf="@+id/SelectUnitTV" />
+
+    <TextView
+        android:id="@+id/SelectAssignmentTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="60dp"
+        android:text="@string/SelectAssignmentTV"
+        android:textColor="@android:color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/SelectUnitTV"
+        app:layout_constraintTop_toBottomOf="@+id/SelectUnitSp" />
+
+    <Spinner
+        android:id="@+id/SelectAssignmentSp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="16dp"
+        android:textColor="@android:color/black"
+        android:ellipsize="marquee"
+        android:textAlignment="inherit"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/SelectAssignmentTV"
+        app:layout_constraintTop_toBottomOf="@+id/SelectAssignmentTV" />
+
+    <TextView
+        android:id="@+id/SelectGroupTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="60dp"
+        android:text="@string/SelectGroupTV"
+        android:textColor="@android:color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/SelectAssignmentTV"
+        app:layout_constraintTop_toBottomOf="@+id/SelectAssignmentSp" />
+
+    <Spinner
+        android:id="@+id/SelectGroupSp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="16dp"
+        android:ellipsize="marquee"
+        android:textAlignment="inherit"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@android:color/black"
+        app:layout_constraintStart_toStartOf="@+id/SelectGroupTV"
+        app:layout_constraintTop_toBottomOf="@+id/SelectGroupTV" />
+
+    <TextView
+        android:id="@+id/SelectStudentTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="60dp"
+        android:text="@string/SelectStudentTV"
+        android:textColor="@android:color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/SelectGroupTV"
+        app:layout_constraintTop_toBottomOf="@+id/SelectGroupSp" />
+
+    <Spinner
+        android:id="@+id/SelectStudentSp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="16dp"
+        android:ellipsize="marquee"
+        android:textAlignment="inherit"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@android:color/black"
+        app:layout_constraintStart_toStartOf="@+id/SelectStudentTV"
+        app:layout_constraintTop_toBottomOf="@+id/SelectStudentTV" />
+
+    <Button
+        android:id="@+id/MarkStudentBtn"
+        android:layout_width="120dp"
+        android:layout_height="72dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:enabled="false"
+        android:text="@string/Mark_Student_Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SelectStudentSp" />
+
+</android.support.constraint.ConstraintLayout>

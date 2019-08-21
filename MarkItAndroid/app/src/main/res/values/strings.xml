@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">MarkIt</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Enrique Tasa</string>
+    <string name="nav_header_subtitle">tasa@enriquetasa.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="SelectAssignmentTV">Select Assignment</string>
+    <string name="SelectUnitTV">Select Course Unit</string>
+    <string name="SelectGroupTV">Select Group</string>
+    <string name="SelectStudentTV">Select Student</string>
+
+    <string name="StudentSelectionMenuItem">Student Selection</string>
+    <string name="MakeSchemeMenuItem">Create Mark Scheme</string>
+    <string name="CheckMarksMenuItem">Check Marks for Student</string>
+
+    <string name="title_activity_mark_student">Mark Student</string>
+
+    <string name="Save_Button_Text">Save</string>
+    <string name="Total_Marks_Text">Total Marks: </string>
+    <string name="ID_Tag_Text">ID: </string>
+    <string name="Student_ID_Hint">Student ID here</string>
+
+    <string name="Mark_Student_Button">Mark Student</string>
+    <string name="Consult_Grade_Button">Consult Grade</string>
+
+    <string name="Comments_Hint">Comments here</string>
+</resources>

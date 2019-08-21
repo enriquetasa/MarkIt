@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+
+    <!-- TODO - change the icons for these drawers-->
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/student_selection"
+            android:icon="@drawable/ic_person_black_24dp"
+            android:title="@string/StudentSelectionMenuItem" />
+        <item
+            android:id="@+id/check_marks"
+            android:icon="@drawable/ic_done_all_black_24dp"
+            android:title="@string/CheckMarksMenuItem" />
+    </group>
+
+    <item android:title="Create">
+        <menu>
+            <item
+                android:id="@+id/make_mark_scheme"
+                android:icon="@drawable/ic_playlist_add_check_black_24dp"
+                android:title="@string/MakeSchemeMenuItem" />
+        </menu>
+    </item>
+
+</menu>
